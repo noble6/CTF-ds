@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Docker
+data/
+.CTFd/
+*.pid
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Challenge files (generated)
+*.bin
+*.raw
+*.pcap
+*.png
+*.jpg
+files/
+obfuscated_challenge
+challenge
+challenge.o
+
+# PIDs
+.pids/
+
+# Cloudflare
+cloudflared
+
+# Uploads
+uploads/

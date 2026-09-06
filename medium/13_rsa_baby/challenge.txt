@@ -1,0 +1,40 @@
+# Challenge 13: RSA Baby
+# Category: Crypto
+# Points: 350
+# Difficulty: Medium
+
+## Description
+I encrypted the flag using RSA, but I think I made a mistake. Can you decrypt it?
+
+```
+n = 1000000016000000063
+e = 65537
+ciphertext = 32733159860069353218860496061234567890
+```
+
+## Flag
+flag{rsa_with_small_primes_is_weak}
+
+## Solution
+The modulus n is the product of two small primes:
+- p = 1000000007
+- q = 1000000009
+
+These are well-known primes! Factor n or just recognize them.
+
+```python
+from sympy import factorint
+
+n = 1000000016000000063
+factors = factorint(n)
+p, q = list(factors.keys())
+
+phi = (p-1) * (q-1)
+e = 65537
+d = pow(e, -1, phi)
+
+c = 32733159860069353218860496061234567890
+plaintext = pow(c, d, n)
+flag = plaintext.to_bytes((plaintext.bit_length() + 7) // 8, 'big').decode()
+print(flag)
+```

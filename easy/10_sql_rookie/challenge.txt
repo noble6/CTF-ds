@@ -1,0 +1,23 @@
+# Challenge 10: SQL Rookie
+# Category: Web
+# Points: 200
+# Difficulty: Easy
+
+## Description
+I made a login page. Can you bypass it and get the flag?
+
+[Host the Flask app]
+
+## Flag
+flag{sql_injection_is_easy_admin}
+
+## Solution
+Try SQL injection on the username field:
+- Username: `admin' --`
+- Password: anything
+
+Or simply use the default credentials:
+- Username: admin
+- Password: supersecretpassword123
+
+(The flag reveals itself after successful login)

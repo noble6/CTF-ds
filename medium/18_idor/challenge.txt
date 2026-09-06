@@ -1,0 +1,19 @@
+# Challenge 18: IDOR
+# Category: Web
+# Points: 350
+# Difficulty: Medium
+
+## Description
+This website lets you view user profiles. But can you access other users' private data?
+
+[Host the Flask app]
+
+## Flag
+flag{idor_exposes_other_users_data}
+
+## Solution
+IDOR (Insecure Direct Object Reference) vulnerability:
+
+1. You're logged in as user2 (user_id=2)
+2. Change the user_id parameter to 1: `/profile?user_id=1`
+3. The admin's secret (flag) is exposed because there's no authorization check

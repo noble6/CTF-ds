@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>First Blood Configuration</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1 { color: #d32f2f; }
+        h2 { color: #333; margin-bottom: 15px; }
+        .config-form { display: grid; gap: 15px; }
+        .form-group { display: flex; align-items: center; gap: 10px; }
+        .form-group label { min-width: 200px; font-weight: 600; }
+        .form-group input { padding: 8px 12px; border: 2px solid #ddd; border-radius: 5px; width: 100px; }
+        button { background: #d32f2f; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        button:hover { background: #b71c1c; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f5f5f5; font-weight: 600; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge-blood { background: #ffebee; color: #d32f2f; }
+        .bonus { color: #2e7d32; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🩸 First Blood Bonus Configuration</h1>
+        
+        <div class="card">
+            <h2>Settings</h2>
+            <form class="config-form" id="configForm">
+                <div class="form-group">
+                    <label>Bonus Percentage:</label>
+                    <input type="number" name="bonus_percentage" 
+                           value="{{ config.get('bonus_percentage', '10') }}" min="0" max="100">
+                    <span>% of challenge value</span>
+                </div>
+                <div class="form-group">
+                    <label>Show First Blood Message:</label>
+                    <input type="checkbox" name="show_message" 
+                           {{ 'checked' if config.get('show_message', 'true') == 'true' }}>
+                </div>
+                <button type="submit">Save Configuration</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>First Blood History</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Challenge</th>
+                        <th>First Blood</th>
+                        <th>Team</th>
+                        <th>Time</th>
+                        <th>Bonus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for blood in bloods %}
+                    <tr>
+                        <td>{{ blood.challenge.name }}</td>
+                        <td><span class="badge badge-blood">🩸</span> {{ blood.user.name }}</td>
+                        <td>{{ blood.team.name if blood.team else 'N/A' }}</td>
+                        <td>{{ blood.solve_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td class="bonus">+{{ blood.bonus_points }} pts</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+    document.getElementById('configForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            bonus_percentage: form.bonus_percentage.value,
+            show_message: form.show_message.checked ? 'true' : 'false'
+        };
+        
+        const res = await fetch('/admin/first_blood/config', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        if (res.ok) {
+            alert('Configuration saved!');
+        } else {
+            alert('Error saving configuration');
+        }
+    };
+    </script>
+</body>
+</html>

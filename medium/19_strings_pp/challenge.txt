@@ -1,0 +1,46 @@
+# Challenge 19: Strings++
+# Category: Reverse
+# Points: 400
+# Difficulty: Medium
+
+## Description
+I found this binary, but `strings` command doesn't show anything useful. Can you reverse engineer it and find the hidden flag?
+
+[Provide challenge.bin]
+
+## How to Create the Challenge
+```bash
+python3 generate.py
+```
+
+## Flag
+flag{strings_command_wont_find_this}
+
+## Solution
+The flag is XOR'd with key 0x42 and obfuscated in the binary.
+
+### Method 1: Manual Analysis
+1. Open in a hex editor or Ghidra
+2. Look for patterns after the code section
+3. Extract the obfuscated bytes
+4. XOR with 0x42 to decrypt
+
+### Method 2: Python Script
+```python
+with open('challenge.bin', 'rb') as f:
+    data = f.read()
+
+key = 0x42
+flag_bytes = bytearray()
+
+for i in range(0, len(data), 11):
+    if i + 11 <= len(data):
+        chunk = data[i:i+11]
+        if len(chunk) >= 10:
+            flag_chunk = chunk[3:7]
+            flag_bytes.extend(flag_chunk)
+
+flag_bytes = flag_bytes.rstrip(b'\x00')
+decrypted = bytes([b ^ key for b in flag_bytes])
+print(decrypted.decode())
+```

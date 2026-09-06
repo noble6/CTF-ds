@@ -1,0 +1,19 @@
+# Challenge 05: Cookie Monster
+# Category: Web
+# Points: 150
+# Difficulty: Easy
+
+## Description
+I made a login system, but only admins can see the flag. Can you become an admin?
+
+[Host the Flask app]
+
+## Flag
+flag{cookies_can_be_modified_by_users}
+
+## Solution
+1. Open browser developer tools (F12)
+2. Go to Application/Storage tab
+3. Find the cookie named "role" with value "guest"
+4. Change it to "admin"
+5. Refresh the page to get the flag

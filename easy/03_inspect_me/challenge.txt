@@ -1,0 +1,16 @@
+# Challenge 03: Inspect Me
+# Category: Web
+# Points: 100
+# Difficulty: Easy
+
+## Description
+There's something hidden on this webpage. Can you find it?
+
+[Host this HTML file on your server]
+
+## Flag
+flag{inspect_element_is_your_friend}
+
+## Solution
+Right-click on the page → Inspect Element (or press F12)
+Look through the HTML source to find the hidden comment containing the flag.

@@ -1,0 +1,22 @@
+# Challenge 04: Hex Dump
+# Category: Crypto
+# Points: 150
+# Difficulty: Easy
+
+## Description
+I intercepted this message, but it looks like gibberish. What format is this?
+
+66 6c 61 67 7b 68 65 78 5f 69 73 5f 63 6f 6f 6c 5f 72 69 67 68 74 7d
+
+## Flag
+flag{hex_is_cool_right}
+
+## Solution
+This is hexadecimal encoding. Each pair of hex characters represents one ASCII character.
+Convert hex to ASCII: 66=f, 6c=l, 61=a, 67=g, etc.
+
+Python solution:
+```python
+hex_str = "66 6c 61 67 7b 68 65 78 5f 69 73 5f 63 6f 6f 6c 5f 72 69 67 68 74 7d"
+print(bytes.fromhex(hex_str).decode())
+```

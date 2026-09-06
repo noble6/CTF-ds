@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Time-Based Scoring Configuration</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1 { color: #1565c0; }
+        h2 { color: #333; margin-bottom: 15px; }
+        .config-form { display: grid; gap: 15px; }
+        .form-group { display: flex; align-items: center; gap: 10px; }
+        .form-group label { min-width: 250px; font-weight: 600; }
+        .form-group input[type="number"] { padding: 8px 12px; border: 2px solid #ddd; border-radius: 5px; width: 100px; }
+        .form-group input[type="checkbox"] { width: 20px; height: 20px; }
+        .form-group span { color: #666; font-size: 14px; }
+        button { background: #1565c0; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        button:hover { background: #0d47a1; }
+        .info-box { background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .info-box h3 { color: #1565c0; margin-bottom: 10px; }
+        .info-box ul { margin-left: 20px; }
+        .info-box li { margin-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f5f5f5; font-weight: 600; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge-blood { background: #ffebee; color: #d32f2f; }
+        .badge-critical { background: #fff3e0; color: #e65100; }
+        .bonus { color: #2e7d32; font-weight: bold; }
+        .scoring-diagram { background: #fafafa; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
+        .scoring-diagram .bar { height: 40px; background: linear-gradient(90deg, #4caf50, #ff9800, #f44336); border-radius: 20px; margin: 10px 0; position: relative; }
+        .scoring-diagram .marker { position: absolute; top: -25px; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ Time-Based Scoring Configuration</h1>
+        
+        <div class="info-box">
+            <h3>How Time-Based Scoring Works</h3>
+            <ul>
+                <li><strong>First Blood Bonus:</strong> The first team to solve a challenge gets extra points</li>
+                <li><strong>Critical Bonus:</strong> Solving near the end of the CTF gives a small bonus</li>
+                <li><strong>Time Decay (Optional):</strong> Challenge values decrease as time passes</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>First Blood Settings</h2>
+            <form class="config-form" id="configForm">
+                <div class="form-group">
+                    <label>First Blood Bonus:</label>
+                    <input type="number" name="first_blood_bonus" 
+                           value="{{ config.get('first_blood_bonus', '10') }}" min="0" max="100">
+                    <span>% of challenge value awarded to first solver</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Show First Blood Notification:</label>
+                    <input type="checkbox" name="show_blood_notification" 
+                           {{ 'checked' if config.get('show_blood_notification', 'true') == 'true' }}>
+                    <span>Display 🩸 First Blood message to all users</span>
+                </div>
+                
+                <hr style="margin: 10px 0;">
+                
+                <h3>Critical Timing Bonus</h3>
+                
+                <div class="form-group">
+                    <label>Enable Critical Bonus:</label>
+                    <input type="checkbox" name="critical_enabled" 
+                           {{ 'checked' if config.get('critical_enabled', 'true') == 'true' }}>
+                    <span>Award bonus for solves near end of CTF</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Critical Window:</label>
+                    <input type="number" name="critical_window_minutes" 
+                           value="{{ config.get('critical_window_minutes', '30') }}" min="1" max="120">
+                    <span>minutes before CTF end</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Critical Bonus:</label>
+                    <input type="number" name="critical_bonus" 
+                           value="{{ config.get('critical_bonus', '5') }}" min="0" max="50">
+                    <span>% of challenge value</span>
+                </div>
+                
+                <hr style="margin: 10px 0;">
+                
+                <h3>Time Decay (Optional)</h3>
+                
+                <div class="form-group">
+                    <label>Enable Time Decay:</label>
+                    <input type="checkbox" name="time_decay_enabled" 
+                           {{ 'checked' if config.get('time_decay_enabled', 'false') == 'true' }}>
+                    <span>Challenge values decrease over time</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Decay Rate:</label>
+                    <input type="number" name="decay_rate" 
+                           value="{{ config.get('decay_rate', '1') }}" min="0" max="10" step="0.1">
+                    <span>% per hour</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Minimum Points:</label>
+                    <input type="number" name="min_points_percentage" 
+                           value="{{ config.get('min_points_percentage', '50') }}" min="10" max="100">
+                    <span>% of original value (floor)</span>
+                </div>
+                
+                <button type="submit">Save Configuration</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>Scoring Visualization</h2>
+            <div class="scoring-diagram">
+                <p><strong>Points Value Over Time</strong></p>
+                <div class="bar">
+                    <span class="marker" style="left: 0%;">100%</span>
+                    <span class="marker" style="left: 25%;">90%</span>
+                    <span class="marker" style="left: 50%;">75%</span>
+                    <span class="marker" style="left: 75%;">60%</span>
+                    <span class="marker" style="right: 0;">50% (min)</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <span>CTF Start</span>
+                    <span>CTF End</span>
+                </div>
+                <p style="margin-top: 15px; color: #666;">
+                    <span style="color: #d32f2f;">🩸 First Blood</span> = +10% | 
+                    <span style="color: #e65100;">⏰ Critical</span> = +5%
+                </p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Recent Bonus Awards</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Challenge</th>
+                        <th>User</th>
+                        <th>Time</th>
+                        <th>Bonus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bonus in recent_bonuses %}
+                    <tr>
+                        <td>
+                            {% if bonus.bonus_type == 'first_blood' %}
+                                <span class="badge badge-blood">🩸 First Blood</span>
+                            {% elif bonus.bonus_type == 'critical' %}
+                                <span class="badge badge-critical">⏰ Critical</span>
+                            {% else %}
+                                <span class="badge badge-blood">🩸+⏰</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ bonus.solve.challenge.name if bonus.solve else 'N/A' }}</td>
+                        <td>{{ bonus.solve.user.name if bonus.solve else 'N/A' }}</td>
+                        <td>{{ bonus.awarded_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td class="bonus">+{{ bonus.bonus_points }} pts</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+    document.getElementById('configForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            first_blood_bonus: form.first_blood_bonus.value,
+            show_blood_notification: form.show_blood_notification.checked ? 'true' : 'false',
+            critical_enabled: form.critical_enabled.checked ? 'true' : 'false',
+            critical_window_minutes: form.critical_window_minutes.value,
+            critical_bonus: form.critical_bonus.value,
+            time_decay_enabled: form.time_decay_enabled.checked ? 'true' : 'false',
+            decay_rate: form.decay_rate.value,
+            min_points_percentage: form.min_points_percentage.value
+        };
+        
+        const res = await fetch('/admin/time_scoring/config', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        if (res.ok) {
+            alert('Configuration saved!');
+        } else {
+            alert('Error saving configuration');
+        }
+    };
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+# Challenge 11: Stego 101
+# Category: Forensics
+# Points: 300
+# Difficulty: Medium
+
+## Description
+There's something hidden in this image. Can you extract the secret?
+
+[Provide stego_image.png - use steghide or LSB to embed flag]
+
+## How to Create the Challenge Image
+```bash
+# Using steghide (install: apt install steghide)
+echo "flag{steganography_hides_in_pixels}" > secret.txt
+steghide embed -cf cover_image.png -ef secret.txt -p "password123"
+```
+
+Or use Python with PIL:
+```python
+from PIL import Image
+import numpy as np
+
+img = Image.open('cover_image.png')
+pixels = np.array(img)
+
+# Hide flag in LSB of red channel
+flag = "flag{steganography_hides_in_pixels}"
+binary_flag = ''.join(format(ord(c), '08b') for c in flag)
+
+idx = 0
+for i in range(len(binary_flag)):
+    row = i // (img.width * 3)
+    col = (i % (img.width * 3)) // 3
+    channel = i % 3
+    pixels[row][col][channel] = (pixels[row][col][channel] & 0xFE) | int(binary_flag[i])
+
+stego_img = Image.fromarray(pixels)
+stego_img.save('stego_image.png')
+```
+
+## Flag
+flag{steganography_hides_in_pixels}
+
+## Solution
+Use steghide to extract:
+```bash
+steghide extract -sf stego_image.png -p "password123"
+```
+Password is hinted in the challenge or use common passwords.
+
+Or use online tools like https://www.aperisolve.com/

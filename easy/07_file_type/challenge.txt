@@ -1,0 +1,21 @@
+# Challenge 07: File Type
+# Category: Forensics
+# Points: 150
+# Difficulty: Easy
+
+## Description
+I have a file, but my computer says it's corrupted. Can you figure out what's wrong?
+
+[Provide mystery_file.bin - a PNG file renamed to .bin]
+
+## Actual File Content
+Create a simple PNG image with the flag text, then rename it to .bin
+
+## Flag
+flag{file_extensions_are_just_labels}
+
+## Solution
+1. Check file magic bytes (first few bytes of file)
+2. PNG files start with: 89 50 4E 47
+3. Rename .bin to .png to view the image
+4. The image contains the flag text

@@ -1,0 +1,14 @@
+# Challenge 01: Welcome
+# Category: Misc
+# Points: 100
+# Difficulty: Easy
+
+## Description
+Welcome to the College CTF! This is your first challenge. 
+Sometimes the flag is right in front of you...
+
+## Flag
+flag{welcome_to_college_ctf_2026}
+
+## Solution
+Read the description carefully. The flag is literally in the challenge description (hidden in HTML source or as a hint).

@@ -1,0 +1,64 @@
+# Challenge 16: Pcap Analysis
+# Category: Forensics
+# Points: 400
+# Difficulty: Medium
+
+## Description
+I captured some network traffic, but I can't find the secret data. Can you analyze this pcap file and extract the flag?
+
+[Provide network_traffic.pcap - create with tcpdump or Wireshark]
+
+## How to Create the Challenge Pcap
+
+### Method 1: Use tcpdump
+```bash
+# Start capture
+sudo tcpdump -i lo -w network_traffic.pcap &
+
+# Send flag via HTTP (in another terminal)
+curl http://localhost:8080/secret?flag=flag{network_traffic_reveals_secrets}
+
+# Send some noise traffic
+curl http://example.com
+ping -c 3 8.8.8.8
+
+# Stop capture
+sudo killall tcpdump
+```
+
+### Method 2: Create with Scapy
+```python
+from scapy.all import *
+import base64
+
+# Create HTTP-like traffic with flag
+flag = "flag{network_traffic_reveals_secrets}"
+encoded_flag = base64.b64encode(flag.encode()).decode()
+
+# Build packets
+packets = []
+# ... (build HTTP request/response packets with flag embedded)
+
+wrpcap('network_traffic.pcap', packets)
+```
+
+### Method 3: Manual Creation
+1. Open Wireshark
+2. Start capture
+3. Generate traffic (HTTP requests, DNS queries, etc.)
+4. Embed flag in one of the HTTP requests
+5. Save as pcap
+
+## Flag
+flag{network_traffic_reveals_secrets}
+
+## Solution
+1. Open pcap in Wireshark
+2. Filter by HTTP: `http`
+3. Look for suspicious requests
+4. Find the flag in HTTP parameters or response body
+
+Or use tshark:
+```bash
+tshark -r network_traffic.pcap -Y "http" -T fields -e http.request.uri
+```

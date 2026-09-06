@@ -1,0 +1,118 @@
+# Challenge 24: Memory Forensics
+# Category: Forensics
+# Points: 600
+# Difficulty: Hard
+
+## Description
+I captured a memory dump from a compromised system. Can you analyze it and find the hidden flag?
+
+[Provide memory_dump.raw or memory_dump.mem]
+
+## How to Create the Challenge Memory Dump
+
+### Method 1: Use Volatility (Recommended)
+```bash
+# Create a Windows VM and capture memory
+# Or use a pre-made memory image
+
+# Install Volatility
+pip install volatility3
+
+# Create a simple memory image with flag
+# (This requires a real VM - see Method 2 for simpler approach)
+```
+
+### Method 2: Simulated Memory Dump
+Create a file that simulates a memory dump with hidden data:
+
+```python
+#!/usr/bin/env python3
+"""Create simulated memory dump with hidden flag"""
+
+import os
+import struct
+import random
+
+def create_memory_dump():
+    # Create 1MB "memory" filled with random data
+    memory = bytearray(os.urandom(1024 * 1024))
+    
+    # Hide flag in multiple locations
+    
+    # 1. Hide in "process" memory (offset 0x10000)
+    flag = b"flag{memory_forensics_reveals_secrets}"
+    offset = 0x10000
+    memory[offset:offset+len(flag)] = flag
+    
+    # 2. Hide in "registry" format (offset 0x20000)
+    reg_key = b"SOFTWARE\\Secret\\Flag"
+    reg_value = flag
+    offset2 = 0x20000
+    memory[offset2:offset2+len(reg_key)] = reg_key
+    memory[offset2+100:offset2+100+len(reg_value)] = reg_value
+    
+    # 3. Hide in "network" format (offset 0x30000)
+    http_request = b"GET /flag?value=" + flag + b" HTTP/1.1\r\nHost: ctf.local\r\n\r\n"
+    offset3 = 0x30000
+    memory[offset3:offset3+len(http_request)] = http_request
+    
+    # Write to file
+    with open('memory_dump.raw', 'wb') as f:
+        f.write(memory)
+    
+    print(f"Memory dump created: memory_dump.raw")
+    print(f"Flag hidden at offsets: 0x{offset:x}, 0x{offset2:x}, 0x{offset3:x}")
+
+if __name__ == '__main__':
+    create_memory_dump()
+```
+
+### Method 3: Real Memory Capture (Windows)
+```bash
+# Use WinPMEM or DumpIt
+# https://github.com/Velocidex/c-aff4/releases
+
+# Capture memory
+winpmem_mini_x64.exe memory_dump.raw
+```
+
+## Flag
+flag{memory_forensics_reveals_secrets}
+
+## Solution
+Use Volatility to analyze the memory dump:
+
+### Step 1: Identify the Image
+```bash
+vol -f memory_dump.raw windows.info
+```
+
+### Step 2: List Processes
+```bash
+vol -f memory_dump.raw windows.pslist
+```
+
+### Step 3: Search for Flag
+```bash
+# Search for flag string
+vol -f memory_dump.raw windows.strings --string "flag{"
+
+# Or use grep on raw file
+strings memory_dump.raw | grep "flag{"
+```
+
+### Step 4: Extract Files
+```bash
+vol -f memory_dump.raw windows.filescan
+vol -f memory_dump.raw windows.dumpfiles --pid <PID>
+```
+
+### Step 5: Network Artifacts
+```bash
+vol -f memory_dump.raw windows.netscan
+```
+
+### Tools:
+- Volatility 3: https://github.com/volatilityfoundation/volatility3
+- Autopsy: https://www.autopsy.com/
+- strings + grep (basic but effective)

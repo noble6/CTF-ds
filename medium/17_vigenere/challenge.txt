@@ -1,0 +1,46 @@
+# Challenge 17: Vigenere
+# Category: Crypto
+# Points: 300
+# Difficulty: Medium
+
+## Description
+I encrypted the flag using a Vigenere cipher with a key related to this CTF event. Can you decrypt it?
+
+```
+Encrypted: qygv{vieeeme_cipher_vlgc_ieorw_xey}
+```
+
+Hint: The key is something you'd find at a college CTF event.
+
+## Flag
+flag{vigenere_cipher_with_known_key}
+
+## Solution
+The key is "college" (related to college CTF event).
+
+Use an online Vigenere decoder or Python:
+```python
+def vigenere_decrypt(ciphertext, key):
+    decrypted = []
+    key_length = len(key)
+    key_index = 0
+    
+    for char in ciphertext:
+        if char.isalpha():
+            key_char = key[key_index % key_length]
+            shift = ord(key_char.lower()) - ord('a')
+            
+            if char.isupper():
+                decrypted_char = chr((ord(char) - ord('A') - shift) % 26 + ord('A'))
+            else:
+                decrypted_char = chr((ord(char) - ord('a') - shift) % 26 + ord('a'))
+            
+            decrypted.append(decrypted_char)
+            key_index += 1
+        else:
+            decrypted.append(char)
+    
+    return ''.join(decrypted)
+
+print(vigenere_decrypt("qygv{vieeeme_cipher_vlgc_ieorw_xey}", "college"))
+```

@@ -1,0 +1,23 @@
+# CTF Dependencies
+# Install with: pip install -r requirements.txt
+
+# Web Framework
+flask>=2.3.0
+requests>=2.31.0
+
+# Cryptography
+cryptography>=41.0.0
+pycryptodome>=3.18.0
+sympy>=1.12.0
+
+# JWT
+PyJWT>=2.8.0
+
+# Image Processing (for steganography)
+Pillow>=10.0.0
+
+# Network Analysis (for pcap challenges)
+scapy>=2.5.0
+
+# General
+numpy>=1.24.0

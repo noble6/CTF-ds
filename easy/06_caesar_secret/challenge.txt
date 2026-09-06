@@ -1,0 +1,22 @@
+# Challenge 06: Caesar's Secret
+# Category: Crypto
+# Points: 150
+# Difficulty: Easy
+
+## Description
+Julius Caesar used to encrypt his messages this way. Can you decrypt it?
+
+synt{pnpghzr_frpnyr_gjb_gjb_a}
+
+## Flag
+flag{caesar_secret_scale_two_two_n}
+
+## Solution
+This is ROT13 (Caesar cipher with shift 13).
+Apply ROT13 again to decrypt:
+
+```python
+import codecs
+cipher = "synt{pnpghzr_frpnyr_gjb_gjb_a}"
+print(codecs.decode(cipher, 'rot_13'))
+```

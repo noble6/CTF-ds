@@ -1,0 +1,29 @@
+# Challenge 20: Weak Hash
+# Category: Crypto
+# Points: 400
+# Difficulty: Medium
+
+## Description
+I hashed a password using MD5, but I think it's not secure enough. Can you crack it?
+
+```
+MD5 Hash: d93a5def163fd0788975da8d77626dea
+```
+
+Hint: The password is related to this CTF event.
+
+## Flag
+flag{md5_is_not_secure_for_passwords}
+
+## Solution
+The password is "college" (related to college CTF).
+
+Crack the MD5 hash using:
+1. Online MD5 crackers (crackstation.net, md5decrypt.net)
+2. Hashcat: `hashcat -m 0 hash.txt wordlist.txt`
+3. John the Ripper: `john --format=raw-md5 --wordlist=wordlist.txt hash.txt`
+4. Python dictionary attack
+
+The flag format is: `flag{md5_is_not_secure_for_passwords}`
+
+Note: The flag is the lesson learned, not the cracked password itself.

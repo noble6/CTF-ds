@@ -1,0 +1,82 @@
+# Challenge 22: Padding Oracle
+# Category: Crypto
+# Points: 700
+# Difficulty: Hard
+
+## Description
+This service encrypts and decrypts messages using AES-CBC. But there's a vulnerability in how it handles padding errors. Can you exploit it to decrypt the flag?
+
+[Host the Flask app]
+
+## Flag
+flag{padding_oracle_attack_on_cbc}
+
+## Solution
+This is a classic Padding Oracle Attack on AES-CBC.
+
+### Understanding the Vulnerability
+The server distinguishes between:
+- "INVALID PADDING" (padding error)
+- "Decryption failed" (other error)
+
+This difference leaks information about the padding validity.
+
+### Attack Steps:
+
+1. **Get the encrypted flag**: Call `/encrypt` to get ciphertext and IV
+
+2. **Implement Padding Oracle Attack**:
+   ```python
+   import requests
+   
+   def oracle(ciphertext_hex, iv_hex):
+       res = requests.post('http://localhost:5008/decrypt', 
+                          json={'ciphertext': ciphertext_hex, 'iv': iv_hex})
+       data = res.json()
+       return 'INVALID PADDING' not in data['message']
+   
+   def padding_oracle_attack(ciphertext, iv):
+       blocks = [iv] + [ciphertext[i:i+16] for i in range(0, len(ciphertext), 16)]
+       plaintext = b''
+       
+       for block_num in range(len(blocks) - 1):
+           decrypted_block = bytearray(16)
+           
+           for byte_pos in range(15, -1, -1):
+               padding_value = 16 - byte_pos
+               
+               for guess in range(256):
+                   # Craft IV
+                   crafted_iv = bytearray(blocks[block_num])
+                   
+                   # Set known bytes
+                   for k in range(byte_pos + 1, 16):
+                       crafted_iv[k] = decrypted_block[k] ^ padding_value
+                   
+                   # Try guess
+                   crafted_iv[byte_pos] = guess
+                   
+                   if oracle(blocks[block_num + 1].hex(), bytes(crafted_iv).hex()):
+                       decrypted_block[byte_pos] = guess ^ padding_value
+                       break
+           
+           plaintext += bytes(decrypted_block)
+       
+       # Remove padding
+       padding_len = plaintext[-1]
+       return plaintext[:-padding_len]
+   
+   # Execute attack
+   ciphertext = bytes.fromhex('YOUR_CIPHERTEXT_HEX')
+   iv = bytes.fromhex('YOUR_IV_HEX')
+   flag = padding_oracle_attack(ciphertext, iv)
+   print(flag.decode())
+   ```
+
+3. **Automated Tools**:
+   - `padbuster` (Perl)
+   - `python-padding-oracle` (Python)
+   - Custom script (see above)
+
+### Key Insight
+The server's error messages reveal whether padding is valid, allowing you to decrypt any ciphertext without knowing the key!
