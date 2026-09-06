@@ -1,24 +1,17 @@
 #!/usr/bin/env python3
-"""
-Weak Hash Challenge - Generate MD5 hash of common password
-"""
 
 import hashlib
 
 def generate_weak_hash():
-    """Generate MD5 hash of a common password"""
-    
-    # Common passwords list
+
     common_passwords = [
         "password", "123456", "qwerty", "admin", "letmein",
         "welcome", "monkey", "dragon", "master", "college",
         "football", "shadow", "michael", "hello", "charlie"
     ]
     
-    # Pick a password (college-related)
     password = "college"
     
-    # Generate MD5 hash
     md5_hash = hashlib.md5(password.encode()).hexdigest()
     
     print(f"Password: {password}")
@@ -27,8 +20,7 @@ def generate_weak_hash():
     return password, md5_hash
 
 def crack_hash(hash_to_crack):
-    """Crack MD5 hash using dictionary attack"""
-    
+
     common_passwords = [
         "password", "123456", "qwerty", "admin", "letmein",
         "welcome", "monkey", "dragon", "master", "college",

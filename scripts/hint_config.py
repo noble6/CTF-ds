@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
-"""
-Hint Configuration for CTFd
-Defines hints and their costs for all challenges
-"""
 
 HINTS = {
-    # ==================== EASY CHALLENGES ====================
     "Welcome": [
         {
             "content": "Read the challenge description very carefully. Sometimes the answer is hiding in plain sight.",
@@ -122,7 +117,6 @@ HINTS = {
         }
     ],
 
-    # ==================== MEDIUM CHALLENGES ====================
     "Stego 101": [
         {
             "content": "Images can hide data in their pixels or metadata.",
@@ -264,7 +258,6 @@ HINTS = {
         }
     ],
 
-    # ==================== HARD CHALLENGES ====================
     "SSRF Master": [
         {
             "content": "SSRF means making the server fetch URLs you specify.",
@@ -353,11 +346,11 @@ HINTS = {
 }
 
 def get_hints_for_challenge(challenge_name):
-    """Get hints for a specific challenge"""
+    
     return HINTS.get(challenge_name, [])
 
 def get_all_hints():
-    """Get all hints"""
+    
     return HINTS
 
 if __name__ == '__main__':

@@ -1,10 +1,4 @@
 #!/usr/bin/env python3
-"""
-CTF Challenge Verification Script
-Tests all challenges to ensure they work correctly before the event
-
-Usage: python3 verify_challenges.py [--url http://localhost:8000] [--token YOUR_TOKEN]
-"""
 
 import requests
 import json
@@ -14,7 +8,6 @@ import subprocess
 import time
 from pathlib import Path
 
-# Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 from import_challenges import CHALLENGES
 
@@ -26,7 +19,7 @@ class Colors:
     END = '\033[0m'
 
 def test_web_challenge(name, port, endpoint="/"):
-    """Test if a web challenge is running"""
+    
     url = f"http://localhost:{port}{endpoint}"
     try:
         response = requests.get(url, timeout=5)
@@ -35,7 +28,7 @@ def test_web_challenge(name, port, endpoint="/"):
         return False
 
 def test_challenge_files():
-    """Verify all challenge files exist"""
+    
     print(f"\n{Colors.BLUE}Testing Challenge Files...{Colors.END}")
     print("=" * 50)
     
@@ -51,11 +44,9 @@ def test_challenge_files():
                 issues.append(f"Missing directory: {challenge_dir}")
                 continue
             
-            # Check for challenge.txt
             if not (challenge_dir / "challenge.txt").exists():
                 issues.append(f"Missing challenge.txt in {challenge_dir}")
             
-            # Check for app.py if it's a web challenge
             if "Web" in challenge.get('category', '') or any(x in challenge['name'].lower() for x in ['cookie', 'sql', 'auth', 'path', 'xss', 'idor', 'ssrf', 'padding']):
                 if not (challenge_dir / "app.py").exists():
                     issues.append(f"Missing app.py in {challenge_dir}")
@@ -70,7 +61,7 @@ def test_challenge_files():
     return len(issues) == 0
 
 def test_web_challenges():
-    """Test all web challenges are running"""
+    
     print(f"\n{Colors.BLUE}Testing Web Challenges...{Colors.END}")
     print("=" * 50)
     
@@ -100,7 +91,7 @@ def test_web_challenges():
     return running
 
 def test_ctfd_connection(url, token):
-    """Test CTFd API connection"""
+    
     print(f"\n{Colors.BLUE}Testing CTFd Connection...{Colors.END}")
     print("=" * 50)
     
@@ -121,7 +112,7 @@ def test_ctfd_connection(url, token):
         return False
 
 def test_flags():
-    """Verify all flags are unique and properly formatted"""
+    
     print(f"\n{Colors.BLUE}Testing Flags...{Colors.END}")
     print("=" * 50)
     
@@ -132,11 +123,9 @@ def test_flags():
         for challenge in challenges:
             flag = challenge['flag']
             
-            # Check flag format
             if not flag.startswith('flag{') or not flag.endswith('}'):
                 issues.append(f"{challenge['name']}: Invalid flag format")
             
-            # Check for duplicates
             if flag in all_flags:
                 issues.append(f"{challenge['name']}: Duplicate flag")
             
@@ -152,7 +141,7 @@ def test_flags():
     return len(issues) == 0
 
 def test_points():
-    """Verify point values are correct"""
+    
     print(f"\n{Colors.BLUE}Testing Points...{Colors.END}")
     print("=" * 50)
     
@@ -186,7 +175,7 @@ def test_points():
     return len(issues) == 0
 
 def generate_report():
-    """Generate verification report"""
+    
     print("\n" + "=" * 50)
     print("  CTF CHALLENGE VERIFICATION REPORT")
     print("=" * 50)

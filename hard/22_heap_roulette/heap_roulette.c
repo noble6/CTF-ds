@@ -1,22 +1,3 @@
-/*
- * Heap Roulette - College CTF 2026
- * Difficulty: HARD (1000 pts)
- *
- * Vulnerabilities:
- * 1. Use-After-Free in note_delete (doesn't zero pointer)
- * 2. Heap overflow in note_edit (off-by-one / overflow)
- * 3. Double free possible via UAF
- *
- * Goal: Overwrite __free_hook or __malloc_hook to get shell
- *
- * Compile:
- *   gcc -o heap_roulette heap_roulette.c -lm
- *   strip heap_roulette
- *
- * Run with:
- *   socat TCP-LISTEN:1337,reuseaddr,fork EXEC:./heap_roulette
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -106,9 +87,8 @@ void edit_note() {
         return;
     }
     
-    // BUG 1: Off-by-one / overflow - can write 1 byte past allocated size
     printf("New content: ");
-    read(0, notes[idx]->content, notes[idx]->size + 1);  // +1 is the bug!
+    read(0, notes[idx]->content, notes[idx]->size + 1);
     
     puts("Updated!");
 }
@@ -124,10 +104,7 @@ void delete_note() {
     
     free(notes[idx]->content);
     
-    // BUG 2: Use-After-Free - we don't set content to NULL!
-    // BUG 3: Also allows double free since we don't check in_use properly
     notes[idx]->in_use = 0;
-    // notes[idx]->content is still pointing to freed memory!
     
     puts("Deleted!");
 }
@@ -141,7 +118,6 @@ void view_note() {
         return;
     }
     
-    // Can view freed content (information leak!)
     printf("Content: %s\n", notes[idx]->content);
     printf("Size: %zu\n", notes[idx]->size);
 }

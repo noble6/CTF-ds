@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
-"""
-Vigenere Cipher Challenge Generator
-"""
 
 def vigenere_encrypt(plaintext, key):
-    """Encrypt plaintext using Vigenere cipher"""
+    
     encrypted = []
     key_length = len(key)
     key_index = 0
     
     for char in plaintext:
         if char.isalpha():
-            # Determine shift based on key character
             key_char = key[key_index % key_length]
             shift = ord(key_char.lower()) - ord('a')
             
@@ -28,7 +24,7 @@ def vigenere_encrypt(plaintext, key):
     return ''.join(encrypted)
 
 def vigenere_decrypt(ciphertext, key):
-    """Decrypt ciphertext using Vigenere cipher"""
+    
     decrypted = []
     key_length = len(key)
     key_index = 0
@@ -58,6 +54,5 @@ if __name__ == '__main__':
     print(f"Encrypted: {encrypted}")
     print(f"Key (for admin): {key}")
     
-    # Verify decryption
     decrypted = vigenere_decrypt(encrypted, key)
     print(f"Decrypted: {decrypted}")

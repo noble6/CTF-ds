@@ -1,10 +1,4 @@
 #!/usr/bin/env python3
-"""
-CTFd Challenge Import Script
-Imports all challenges into CTFd via API
-
-Usage: python3 import_challenges.py --url http://localhost:8000 --token YOUR_API_TOKEN
-"""
 
 import requests
 import json
@@ -13,11 +7,9 @@ import sys
 import argparse
 from pathlib import Path
 
-# Import hint configuration
 sys.path.insert(0, str(Path(__file__).parent))
 from hint_config import get_hints_for_challenge
 
-# Challenge definitions
 CHALLENGES = {
     "easy": [
         {
@@ -236,7 +228,7 @@ class CTFdImporter:
         }
     
     def create_challenge(self, challenge_data):
-        """Create a challenge in CTFd"""
+        
         payload = {
             'name': challenge_data['name'],
             'category': challenge_data['category'],
@@ -259,7 +251,7 @@ class CTFdImporter:
             return None
     
     def add_flag(self, challenge_id, flag_content):
-        """Add a flag to a challenge"""
+        
         payload = {
             'challenge_id': challenge_id,
             'content': flag_content,
@@ -279,7 +271,7 @@ class CTFdImporter:
             return None
     
     def add_hint(self, challenge_id, hint_content, cost=0):
-        """Add a hint to a challenge"""
+        
         payload = {
             'challenge_id': challenge_id,
             'content': hint_content,
@@ -300,7 +292,7 @@ class CTFdImporter:
             return None
     
     def import_hints(self, challenge_id, challenge_name):
-        """Import all hints for a challenge"""
+        
         hints = get_hints_for_challenge(challenge_name)
         
         if not hints:
@@ -310,7 +302,7 @@ class CTFdImporter:
             self.add_hint(challenge_id, hint['content'], hint['cost'])
     
     def import_all(self):
-        """Import all challenges"""
+        
         total = sum(len(challenges) for challenges in CHALLENGES.values())
         imported = 0
         hints_added = 0
@@ -323,14 +315,11 @@ class CTFdImporter:
             print("-" * 30)
             
             for challenge in challenges:
-                # Create challenge
                 result = self.create_challenge(challenge)
                 
                 if result:
-                    # Add flag
                     self.add_flag(result['id'], challenge['flag'])
                     
-                    # Add hints
                     hints = get_hints_for_challenge(challenge['name'])
                     if hints:
                         self.import_hints(result['id'], challenge['name'])

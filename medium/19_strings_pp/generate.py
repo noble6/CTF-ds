@@ -1,54 +1,39 @@
 #!/usr/bin/env python3
-"""
-Strings++ Challenge - Create a binary with obfuscated flag
-"""
 
 import struct
 import sys
 
 def create_binary():
-    """Create a binary file with obfuscated flag"""
-    
-    # Flag to hide
+
     flag = "flag{strings_command_wont_find_this}"
     
-    # Obfuscation: XOR with key
     key = 0x42
     obfuscated = bytes([b ^ key for b in flag.encode()])
     
-    # Create ELF-like header (simplified)
     header = b'\x7fELF'  # ELF magic
     header += b'\x02\x01\x01\x00'  # 64-bit, little endian
     header += b'\x00' * 8  # padding
     
-    # Add some "code" that looks legitimate
     code = b'\x48\x89\xe5'  # mov rbp, rsp
     code += b'\x48\x83\xec\x20'  # sub rsp, 32
     code += b'\xbf\x01\x00\x00\x00'  # mov edi, 1
     code += b'\x48\x8d\x35\x00\x00\x00\x00'  # lea rsi, [rip]
     
-    # Add obfuscated flag in a way that strings won't find it
-    # Split into chunks and interleave with noise
     chunks = []
     for i in range(0, len(obfuscated), 4):
         chunk = obfuscated[i:i+4]
-        # Pad chunk to 4 bytes
         chunk = chunk.ljust(4, b'\x00')
-        # Add noise before and after
         noise = bytes([0x90, 0x90, 0x90])  # NOPs
         chunks.append(noise + chunk + noise)
     
-    # Combine everything
     binary = header + code + b''.join(chunks)
     
-    # Add some legitimate-looking strings at the end
     legit_strings = b"This is a normal binary\x00"
     legit_strings += b"Nothing to see here\x00"
     legit_strings += b"Version 1.0\x00"
     
     binary += legit_strings
     
-    # Write binary
     with open('challenge.bin', 'wb') as f:
         f.write(binary)
     
@@ -57,30 +42,22 @@ def create_binary():
     print(f"XOR key: 0x{key:02x}")
 
 def solve():
-    """Solution script"""
-    # Read the binary
+    
     with open('challenge.bin', 'rb') as f:
         data = f.read()
     
-    # Find the obfuscated data (after the code section)
-    # Look for the pattern of noise + data + noise
     key = 0x42
     flag_bytes = bytearray()
     
-    # Simple extraction (in reality, you'd need to reverse engineer the binary)
-    # The flag is XOR'd with 0x42
     for i in range(0, len(data), 11):  # Each chunk is 11 bytes
         if i + 11 <= len(data):
             chunk = data[i:i+11]
-            # Extract the 4-byte data chunk (skip 3 bytes noise, take 4, skip 3)
             if len(chunk) >= 10:
                 flag_chunk = chunk[3:7]
                 flag_bytes.extend(flag_chunk)
     
-    # Remove padding zeros
     flag_bytes = flag_bytes.rstrip(b'\x00')
     
-    # XOR decrypt
     decrypted = bytes([b ^ key for b in flag_bytes])
     
     try:

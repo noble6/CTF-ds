@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-CTFd Challenge Generator - Creates all challenge files and generates import data
-Run this first to generate all challenge files, then use import_challenges.py to load into CTFd
-"""
 
 import os
 import json
@@ -10,27 +6,23 @@ import subprocess
 from pathlib import Path
 
 def generate_challenge_files():
-    """Generate all challenge files"""
-    
+
     base_dir = Path(__file__).parent.parent
     
     print("Generating Challenge Files...")
     print("=" * 50)
     
-    # Easy challenges
     print("\n[1/4] Generating Easy challenges...")
     easy_dir = base_dir / "easy"
     for challenge_dir in sorted(easy_dir.iterdir()):
         if challenge_dir.is_dir():
             print(f"  - {challenge_dir.name}")
     
-    # Medium challenges
     print("\n[2/4] Generating Medium challenges...")
     medium_dir = base_dir / "medium"
     for challenge_dir in sorted(medium_dir.iterdir()):
         if challenge_dir.is_dir():
             print(f"  - {challenge_dir.name}")
-            # Run generate scripts if they exist
             gen_script = challenge_dir / "generate.py"
             if gen_script.exists():
                 try:
@@ -42,13 +34,11 @@ def generate_challenge_files():
                 except subprocess.CalledProcessError as e:
                     print(f"    Warning: Could not run generator: {e}")
     
-    # Hard challenges
     print("\n[3/4] Generating Hard challenges...")
     hard_dir = base_dir / "hard"
     for challenge_dir in sorted(hard_dir.iterdir()):
         if challenge_dir.is_dir():
             print(f"  - {challenge_dir.name}")
-            # Run generate scripts if they exist
             gen_script = challenge_dir / "generate.py"
             if gen_script.exists():
                 try:
@@ -68,8 +58,7 @@ def generate_challenge_files():
     print("3. Run: python3 scripts/import_challenges.py --url http://localhost:8000 --token YOUR_TOKEN")
 
 def generate_challenge_json():
-    """Generate JSON file with all challenge data for manual import"""
-    
+
     from import_challenges import CHALLENGES
     
     output_file = Path(__file__).parent / "challenges.json"
