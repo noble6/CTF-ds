@@ -1,0 +1,112 @@
+# Challenge 23: Bleichenbacher's Revenge
+# Category: Crypto
+# Points: 1000
+# Difficulty: HARD
+
+## Description
+I encrypted the flag using RSA with PKCS#1 v1.5 padding. But I made the decryption oracle too helpful...
+
+**Service:** `http://HOST:5010`
+
+## What is Bleichenbacher's Attack?
+
+In 1998, Daniel Bleichenbacher demonstrated a devastating attack against RSA PKCS#1 v1.5:
+
+1. **The Vulnerability**: A server that reveals whether decrypted ciphertext has valid PKCS#1 v1.5 padding
+2. **The Attack**: Adaptive chosen-ciphertext attack using ~1 million carefully crafted queries
+3. **The Result**: Complete plaintext recovery without the private key
+
+This attack affected real-world systems including SSL/TLS!
+
+## Challenge Details
+
+The server:
+1. Encrypts a flag using RSA PKCS#1 v1.5
+2. Provides a decryption oracle at `/oracle`
+3. Returns **different error messages** for:
+   - Invalid first byte
+   - Invalid block type
+   - No separator found
+   - Padding too short
+   - Valid padding
+
+## Files
+- `server.py` - The vulnerable server
+- `solve.py` - Solution framework (you need to complete it!)
+
+## How to Run
+```bash
+# Start server
+python3 server.py
+
+# In another terminal, run attack
+python3 solve.py --auto
+```
+
+## Attack Overview
+
+The attack has 4 main steps:
+
+### Step 1: Blinding
+Find an initial value `s0` such that `c * s0^e mod n` has valid PKCS#1 v1.5 padding.
+
+### Step 2: Searching
+Find the next `si` that produces valid padding when multiplied with the ciphertext.
+
+### Step 3: Narrowing
+Use the mathematical relationships to narrow the possible plaintext values.
+
+### Step 4: Convergence
+Repeat until the plaintext interval converges to a single value.
+
+## Key Insights
+
+```
+PKCS#1 v1.5 format:
+0x00 || 0x02 || <padding> || 0x00 || <message>
+
+Valid padding: starts with 0x00 0x02 followed by at least 8 non-zero bytes
+
+B = 2^(8*(k-2)) where k is key size in bytes
+
+If c' = c * s^e mod n decrypts to valid padding:
+Then m * s mod n is in [2B, 3B-1]
+
+This gives us information about m!
+```
+
+## Tools Needed
+- Python with `pycryptodome`
+- `requests` library
+- Mathematical patience (~1 million queries)
+- Understanding of modular arithmetic
+
+## Solution Framework
+The `solve.py` file provides a framework. You need to:
+
+1. Complete the `step2a()` function (searching with increment)
+2. Handle interval arithmetic correctly
+3. Optimize for speed (use batch queries if possible)
+
+## Hints
+1. The oracle gives **different errors** - this is the vulnerability
+2. Each query gives you 1 bit of information about the plaintext
+3. You need ~1 million queries for 1024-bit RSA
+4. The math is based on modular interval arithmetic
+5. Reference: https://crypto.stanford.edu/~dabo/pubs2abstracts/ssl-timing.html
+
+## Difficulty Notes
+This challenge requires:
+- Deep understanding of RSA and PKCS#1 v1.5
+- Implementation of complex mathematical algorithm
+- Patience (many oracle queries)
+- Optimization skills (attack can be slow)
+
+This is a **real cryptographic attack** used in the wild!
+
+## Resources
+- [Original Paper](https://crypto.stanford.edu/~dabo/pubs2abstracts/ssl-timing.html)
+- [Simplified Explanation](https://blog.filippo.io/bleichenbacher-07-tls-attack/)
+- [Reference Implementation](https://github.com/danieluhrwork/bleichenbacher-attack)
+
+Good luck breaking RSA! 🔐

@@ -1,0 +1,128 @@
+# Challenge 24: Volatility Master
+# Category: Forensics
+# Points: 900
+# Difficulty: HARD
+
+## Description
+I captured a memory dump from a compromised Windows system. The attacker used advanced anti-forensics techniques to hide their tracks. Can you recover all the hidden artifacts and find the flag?
+
+**File:** `memory_dump.raw` (50 MB)
+
+## Anti-Forensics Techniques Used
+
+The attacker employed multiple hiding techniques:
+
+1. **Process Hollowing** - Legitimate process with injected malicious code
+2. **XOR Encryption** - Flag data XOR'd with single-byte key
+3. **Base64 Encoding** - Data hidden in HTTP requests
+4. **UTF-16 Encoding** - Windows-style Unicode strings
+5. **Hex Encoding** - Data encoded as hexadecimal
+6. **JSON Obfuscation** - Configuration data in JSON format
+7. **Timestomping** - Modified file timestamps
+8. **DNS Tunneling** - Data exfiltration via DNS queries
+9. **Alternate Data Streams** - Hidden NTFS streams
+10. **Registry Persistence** - Malicious registry keys
+
+## Files
+- `generate.py` - Creates the memory dump (for challenge creators)
+- `solve.py` - Solution script (YOU NEED TO CREATE THIS!)
+
+## How to Generate the Dump
+```bash
+python3 generate.py
+# Creates: memory_dump.raw, metadata.json
+```
+
+**Note:** Only share `memory_dump.raw` with participants, not `metadata.json`!
+
+## Goal
+
+Find ALL hidden flags in the memory dump. There are multiple flags hidden using different techniques:
+
+| Flag Location | Encoding | Difficulty |
+|---------------|----------|------------|
+| Process memory | Plaintext | Easy |
+| Registry | XOR | Medium |
+| Network traffic | Base64 | Medium |
+| Credentials | Plaintext | Easy |
+| Shellcode | XOR + position | Hard |
+| DNS tunnel | Plaintext | Medium |
+| HTTP exfil | Plaintext | Medium |
+| ADS | Plaintext | Hard |
+| Registry config | JSON | Medium |
+| UTF-16 process | UTF-16 | Medium |
+
+**Main flag:** The longest flag containing the most underscores is likely the main challenge flag.
+
+## Solution Approach
+
+### Step 1: Extract Strings
+```bash
+strings memory_dump.raw | grep "flag{"
+```
+
+### Step 2: Search for XOR Encrypted Data
+```python
+# Try all 256 possible XOR keys
+for key in range(256):
+    encrypted = bytes([b ^ key for b in b"flag{"])
+    if encrypted in memory:
+        # Found it!
+```
+
+### Step 3: Search for Base64
+```python
+import re, base64
+b64_pattern = re.compile(rb'[A-Za-z0-9+/]{20,}={0,2}')
+for match in b64_pattern.finditer(memory):
+    decoded = base64.b64decode(match.group())
+    if b'flag{' in decoded:
+        print(decoded)
+```
+
+### Step 4: Search UTF-16
+```python
+# UTF-16 LE encoding
+utf16_pattern = rb'(?:f\x00l\x00a\x00g\x00\{\x00)'
+# Search and decode
+```
+
+### Step 5: Volatility Analysis (Optional)
+```bash
+# Using Volatility 3
+vol -f memory_dump.raw windows.pslist
+vol -f memory_dump.raw windows.netscan
+vol -f memory_dump.raw windows.filescan
+```
+
+## Tools Needed
+- `strings` + `grep`
+- Python with regex
+- `xxd` or hex editor
+- Volatility 3 (optional but helpful)
+- CyberChef (for encoding conversions)
+
+## Solution Script
+Create a Python script that:
+1. Loads the memory dump
+2. Searches for flags in multiple encodings
+3. Decrypts/decodes each type
+4. Reports all found flags
+
+## Hints
+1. Start with `strings | grep flag` - you'll find some immediately
+2. The XOR key is always a single byte (0-255)
+3. Look for HTTP requests containing encoded data
+4. Windows uses UTF-16 for many strings
+5. Check JSON structures for configuration data
+6. DNS queries can exfiltrate data in subdomain names
+
+## Difficulty Notes
+This challenge requires:
+- Knowledge of Windows internals
+- Understanding of multiple encoding schemes
+- Forensic analysis methodology
+- Patience to find all hiding spots
+- Ability to write analysis scripts
+
+Good luck finding all the hidden artifacts! 🔍

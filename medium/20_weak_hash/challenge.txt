@@ -1,29 +1,84 @@
-# Challenge 20: Weak Hash
+# Challenge 20: Hash Cracking (Upgraded from Weak Hash)
 # Category: Crypto
 # Points: 400
-# Difficulty: Medium
+# Difficulty: MEDIUM-HARD
 
 ## Description
-I hashed a password using MD5, but I think it's not secure enough. Can you crack it?
+I stored passwords using SHA-256 with a salt. But I think my implementation is flawed...
 
+**Hash Dump:**
 ```
-MD5 Hash: d93a5def163fd0788975da8d77626dea
+admin:5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8
+user1:a]3f8b2e5c1d7a9f4e6b0c2d8a1f3e5b7c9d2a4f6e8b0c1d3a5f7e9b1c3d5a7
+user2:7c222fb2927d828af22f592134e8932480637c0d48b2c9f2f6d5e4b3a2c1d0e9
 ```
 
-Hint: The password is related to this CTF event.
+## Vulnerabilities
 
-## Flag
-flag{md5_is_not_secure_for_passwords}
+### 1. No Salt / Same Salt
+- All passwords use the same salt (or none)
+- Rainbow table attack possible
+
+### 2. Weak Salt
+- Salt is short or predictable
+- Can be brute-forced
+
+### 3. Custom Algorithm
+- Modified SHA-256 with weakness
+- Collision easier to find
+
+## Attack Techniques
+
+### 1. Rainbow Tables
+```bash
+# Use precomputed tables
+# Or: https://crackstation.net/
+```
+
+### 2. Dictionary Attack
+```bash
+# Use hashcat
+hashcat -m 1400 hash.txt wordlist.txt
+
+# Or John the Ripper
+john --format=raw-sha256 hash.txt
+```
+
+### 3. Brute Force (if salt is weak)
+```python
+import hashlib
+import itertools
+
+salt = "abc"  # Weak salt!
+target = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+
+for length in range(1, 6):
+    for attempt in itertools.product('abcdefghijklmnopqrstuvwxyz', repeat=length):
+        password = ''.join(attempt)
+        hashed = hashlib.sha256((salt + password).encode()).hexdigest()
+        if hashed == target:
+            print(f"Found: {password}")
+            break
+```
+
+### 4. Hash Length Extension
+If the hash uses H(secret + message), you can extend it without knowing the secret.
+
+## Tools Needed
+- hashcat - https://hashcat.net/
+- John the Ripper - https://www.openwall.com/john/
+- CrackStation - https://crackstation.net/
+- Python hashlib
 
 ## Solution
-The password is "college" (related to college CTF).
+1. Try online crackers first (CrackStation)
+2. If failed, try dictionary attack with common wordlists
+3. If salt is weak, brute-force the salt first
+4. Check for custom algorithm weaknesses
 
-Crack the MD5 hash using:
-1. Online MD5 crackers (crackstation.net, md5decrypt.net)
-2. Hashcat: `hashcat -m 0 hash.txt wordlist.txt`
-3. John the Ripper: `john --format=raw-md5 --wordlist=wordlist.txt hash.txt`
-4. Python dictionary attack
-
-The flag format is: `flag{md5_is_not_secure_for_passwords}`
-
-Note: The flag is the lesson learned, not the cracked password itself.
+## Hints
+1. The password might be a common word
+2. Try CrackStation or similar online databases
+3. If there's a salt, it might be short or predictable
+4. SHA-256 is fast - good for brute force
+5. Check if the implementation has any flaws

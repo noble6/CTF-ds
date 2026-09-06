@@ -103,125 +103,125 @@ CHALLENGES = {
     ],
     "medium": [
         {
-            "name": "Stego 101",
+            "name": "Stego Master",
             "category": "Forensics",
-            "description": "There's something hidden in this image. Can you extract the secret?\n\n[Download stego_image.png]",
-            "value": 300,
-            "flag": "flag{steganography_hides_in_pixels}",
-            "type": "static"
-        },
-        {
-            "name": "Broken Auth",
-            "category": "Web",
-            "description": "I implemented JWT authentication, but something seems off. Can you forge a token and get the flag?\n\nhttp://YOUR_SERVER:5004",
+            "description": "There are MULTIPLE secrets hidden in this image using different techniques. Can you find ALL of them?\n\n[Download stego_master.png]\n\nHint: LSB, EXIF metadata, file carving, and password-protected layers!",
             "value": 350,
-            "flag": "flag{jwt_tokens_can_be_decoded_and_modified}",
+            "flag": "flag{multi_layer_steganography_master}",
             "type": "static"
         },
         {
-            "name": "RSA Baby",
-            "category": "Crypto",
-            "description": "I encrypted the flag using RSA, but I think I made a mistake. Can you decrypt it?\n\nn = 1000000016000000063\ne = 65537\nciphertext = 32733159860069353218860496061234567890",
-            "value": 350,
-            "flag": "flag{rsa_with_small_primes_is_weak}",
-            "type": "static"
-        },
-        {
-            "name": "Path Traversal",
+            "name": "JWT Nightmare",
             "category": "Web",
-            "description": "This file viewer lets you read files from the server. But can you read files you're not supposed to access?\n\nhttp://YOUR_SERVER:5005",
-            "value": 350,
-            "flag": "flag{path_traversal_reads_sensitive_files}",
-            "type": "static"
-        },
-        {
-            "name": "XSS Reflected",
-            "category": "Web",
-            "description": "This search page seems vulnerable. Can you exploit it to get the flag?\n\nhttp://YOUR_SERVER:5006",
-            "value": 300,
-            "flag": "flag{xss_can_execute_arbitrary_javascript}",
-            "type": "static"
-        },
-        {
-            "name": "Pcap Analysis",
-            "category": "Forensics",
-            "description": "I captured some network traffic, but I can't find the secret data. Can you analyze this pcap file and extract the flag?\n\n[Download network_traffic.pcap]",
+            "description": "I implemented JWT with RS256 algorithm. But I heard algorithm confusion attacks can bypass this...\n\nhttp://YOUR_SERVER:5004\n\nHint: Change RS256 to HS256 and use the public key as HMAC secret!",
             "value": 400,
-            "flag": "flag{network_traffic_reveals_secrets}",
+            "flag": "flag{jwt_algorithm_confusion_attack}",
             "type": "static"
         },
         {
-            "name": "Vigenere",
+            "name": "RSA Evolution",
             "category": "Crypto",
-            "description": "I encrypted the flag using a Vigenere cipher with a key related to this CTF event. Can you decrypt it?\n\nEncrypted: qygv{vieeeme_cipher_vlgc_ieorw_xey}\n\nHint: The key is something you'd find at a college CTF event.",
-            "value": 300,
-            "flag": "flag{vigenere_cipher_with_known_key}",
+            "description": "I encrypted the flag using RSA with unconventional parameters. Can you break it?\n\nVariant A: Wiener's attack (small d)\nVariant B: Multi-prime RSA (N = p*q*r)\nVariant C: Common modulus attack\n\n[Download challenge files]",
+            "value": 400,
+            "flag": "flag{rsa_unconventional_attacks}",
             "type": "static"
         },
         {
-            "name": "IDOR",
+            "name": "Filter Bypass",
             "category": "Web",
-            "description": "This website lets you view user profiles. But can you access other users' private data?\n\nhttp://YOUR_SERVER:5007",
-            "value": 350,
-            "flag": "flag{idor_exposes_other_users_data}",
+            "description": "I added MULTIPLE filters to prevent path traversal. But can you bypass ALL of them?\n\nhttp://YOUR_SERVER:5005\n\nFilters: ../ blocked, URL encoding blocked, null bytes blocked, normalization applied.\n\nHint: Double encoding, UTF-8 overlong, path truncation!",
+            "value": 400,
+            "flag": "flag{filter_bypass_all_layers}",
             "type": "static"
         },
         {
-            "name": "Strings++",
+            "name": "DOM XSS + CSP Bypass",
+            "category": "Web",
+            "description": "This website has Content Security Policy (CSP) protection. But can you still execute DOM-based XSS?\n\nhttp://YOUR_SERVER:5006\n\nHint: Look for DOM sinks (innerHTML, eval). CSP allows 'unsafe-inline'!",
+            "value": 400,
+            "flag": "flag{dom_xss_csp_bypass}",
+            "type": "static"
+        },
+        {
+            "name": "Network Forensics",
+            "category": "Forensics",
+            "description": "I captured encrypted network traffic. I also have the TLS key from memory. Can you decrypt and analyze?\n\n[Download traffic.pcap and key.pem]\n\nHint: Use Wireshark TLS decryption, check DNS queries, look for exfiltrated data!",
+            "value": 450,
+            "flag": "flag{network_forensics_encrypted_traffic}",
+            "type": "static"
+        },
+        {
+            "name": "Cipher Chain",
+            "category": "Crypto",
+            "description": "I encrypted the flag using MULTIPLE cipher layers: Vigenere → ROT13 → Reverse → Atbash. Can you peel back all the layers?\n\nCiphertext: Jx#5k9@p2m!Qw8^z\n\nHint: Decrypt in REVERSE order. Key for Vigenere: 'college'",
+            "value": 350,
+            "flag": "flag{cipher_chain_multiple_layers}",
+            "type": "static"
+        },
+        {
+            "name": "Race Condition + IDOR",
+            "category": "Web",
+            "description": "This API has IDOR AND race condition vulnerabilities. Can you exploit both?\n\nhttp://YOUR_SERVER:5007\n\nHint: Access admin profile via IDOR, exploit race condition for balance manipulation!",
+            "value": 400,
+            "flag": "flag{race_condition_idor_chain}",
+            "type": "static"
+        },
+        {
+            "name": "Anti-RE",
             "category": "Reverse",
-            "description": "I found this binary, but `strings` command doesn't show anything useful. Can you reverse engineer it and find the hidden flag?\n\n[Download challenge.bin]",
-            "value": 400,
-            "flag": "flag{strings_command_wont_find_this}",
+            "description": "This binary uses advanced obfuscation: control flow flattening, opaque predicates, string encryption, and anti-debug. Can you reverse it?\n\n[Download anti_re_binary]\n\nHint: Use Ghidra/IDA for static analysis, or dynamic analysis with GDB. Consider angr for symbolic execution!",
+            "value": 450,
+            "flag": "flag{anti_re_obfuscation_bypass}",
             "type": "static"
         },
         {
-            "name": "Weak Hash",
+            "name": "Hash Cracking",
             "category": "Crypto",
-            "description": "I hashed a password using MD5, but I think it's not secure enough. Can you crack it?\n\nMD5 Hash: d93a5def163fd0788975da8d77626dea\n\nHint: The password is related to this CTF event.",
+            "description": "I stored passwords using SHA-256 with a salt. But my implementation might be flawed...\n\nadmin:5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8\nuser1:a3f8b2e5c1d7a9f4e6b0c2d8a1f3e5b7c9d2a4f6e8b0c1d3a5f7e9b1c3d5a7\n\nHint: Try CrackStation, hashcat, or John the Ripper!",
             "value": 400,
-            "flag": "flag{md5_is_not_secure_for_passwords}",
+            "flag": "flag{sha256_weak_implementation}",
             "type": "static"
         }
     ],
     "hard": [
         {
-            "name": "SSRF Master",
-            "category": "Web",
-            "description": "This URL fetcher service lets you fetch any webpage. But there's a secret internal service running. Can you access it?\n\nhttp://YOUR_SERVER:5008\n\nHint: There's a secret internal service running on localhost:9999",
-            "value": 600,
-            "flag": "flag{ssrf_can_access_internal_services}",
-            "type": "static"
-        },
-        {
-            "name": "Padding Oracle",
-            "category": "Crypto",
-            "description": "This service encrypts and decrypts messages using AES-CBC. But there's a vulnerability in how it handles padding errors. Can you exploit it to decrypt the flag?\n\nhttp://YOUR_SERVER:5009",
-            "value": 700,
-            "flag": "flag{padding_oracle_attack_on_cbc}",
-            "type": "static"
-        },
-        {
-            "name": "Buffer Overflow",
+            "name": "ROP Chain Master",
             "category": "Pwn",
-            "description": "This program has a vulnerable function. Can you exploit it to get the flag?\n\n[Download challenge binary]\n\nHint: The 'authorized' variable needs to be changed.",
-            "value": 800,
-            "flag": "flag{buffer_overflow_overwrites_variables}",
+            "description": "I compiled this binary with security features (NX, ASLR), but no stack canary. Can you build a ROP chain to get a shell?\n\n[Download rop_master binary]\n\nHint: First leak a libc address, then call system('/bin/sh')",
+            "value": 1000,
+            "flag": "flag{rop_chain_aslr_bypass_master}",
             "type": "static"
         },
         {
-            "name": "Memory Forensics",
+            "name": "Heap Roulette",
+            "category": "Pwn",
+            "description": "This heap manager has multiple vulnerabilities. Can you exploit Use-After-Free and tcache poisoning to overwrite __free_hook?\n\nnc HOST PORT\n\nHint: View freed chunks to leak addresses, then poison tcache.",
+            "value": 1000,
+            "flag": "flag{tcache_poisoning_free_hook}",
+            "type": "static"
+        },
+        {
+            "name": "Bleichenbacher's Revenge",
+            "category": "Crypto",
+            "description": "I encrypted the flag using RSA PKCS#1 v1.5. The decryption oracle returns detailed error messages. Can you implement Bleichenbacher's attack?\n\nhttp://HOST:5010\n\nHint: ~1 million queries needed. The oracle distinguishes padding errors.",
+            "value": 1000,
+            "flag": "flag{bleichenbacher_padding_oracle_rsa}",
+            "type": "static"
+        },
+        {
+            "name": "Volatility Master",
             "category": "Forensics",
-            "description": "I captured a memory dump from a compromised system. Can you analyze it and find the hidden flag?\n\n[Download memory_dump.raw]",
-            "value": 600,
-            "flag": "flag{memory_forensics_reveals_secrets}",
+            "description": "I captured a memory dump with advanced anti-forensics: process hollowing, XOR encryption, DNS tunneling, and more. Find ALL hidden flags!\n\n[Download memory_dump.raw (50MB)]\n\nHint: Try multiple decoding techniques - plaintext, XOR, Base64, UTF-16.",
+            "value": 900,
+            "flag": "flag{v0l4t1l1ty_m4st3r_4dv4nc3d_f0r3ns1cs}",
             "type": "static"
         },
         {
-            "name": "Obfuscated RE",
+            "name": "VM-Obfuscated RE",
             "category": "Reverse",
-            "description": "I found this binary, but it's heavily obfuscated. Can you reverse engineer it and extract the hidden flag?\n\n[Download obfuscated_challenge]",
-            "value": 700,
-            "flag": "flag{obfuscation_makes_reverse_engineering_hard}",
+            "description": "The flag is protected by a custom virtual machine with encrypted bytecode and anti-debug features. Reverse engineer the VM to extract the flag.\n\n[Download vm_challenge.py and bytecode.bin]\n\nHint: The bytecode is XOR encrypted with 0xDEADBEEF. Flag chars stored with XOR 0x42.",
+            "value": 1000,
+            "flag": "flag{vm_0bfu5c4t10n_r3v3r51ng}",
             "type": "static"
         }
     ]

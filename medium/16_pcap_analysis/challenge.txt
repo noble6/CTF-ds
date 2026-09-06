@@ -1,64 +1,87 @@
-# Challenge 16: Pcap Analysis
+# Challenge 16: Network Forensics (Upgraded from Pcap Analysis)
 # Category: Forensics
-# Points: 400
-# Difficulty: Medium
+# Points: 450
+# Difficulty: MEDIUM-HARD
 
 ## Description
-I captured some network traffic, but I can't find the secret data. Can you analyze this pcap file and extract the flag?
+I captured network traffic from a compromised host. The attacker encrypted their communications, but I also captured the encryption key in memory. Can you decrypt and analyze the traffic?
 
-[Provide network_traffic.pcap - create with tcpdump or Wireshark]
+**Files:**
+- `traffic.pcap` - Network capture
+- `key.pem` - Encryption key (extracted from memory)
 
-## How to Create the Challenge Pcap
+## What's in the Capture
 
-### Method 1: Use tcpdump
+1. **HTTPS Traffic** - Can be decrypted with the key
+2. **DNS Queries** - May contain exfiltrated data
+3. **FTP Traffic** - Old school file transfer
+4. **ICMP Packets** - Sometimes used for covert channels
+5. **Custom Protocol** - Attacker's C2 protocol
+
+## Tools Needed
+- Wireshark - Network analysis
+- tshark - Command-line Wireshark
+- NetworkMiner - File extraction
+- Python with scapy - Packet manipulation
+
+## Solution Approach
+
+### Step 1: Decrypt HTTPS
 ```bash
-# Start capture
-sudo tcpdump -i lo -w network_traffic.pcap &
-
-# Send flag via HTTP (in another terminal)
-curl http://localhost:8080/secret?flag=flag{network_traffic_reveals_secrets}
-
-# Send some noise traffic
-curl http://example.com
-ping -c 3 8.8.8.8
-
-# Stop capture
-sudo killall tcpdump
+# In Wireshark: Edit → Preferences → Protocols → TLS → RSA Keys
+# Add key.pem and decrypt traffic
 ```
 
-### Method 2: Create with Scapy
+### Step 2: Analyze DNS
+```bash
+# Extract DNS queries - look for suspicious domains
+tshark -r traffic.pcap -Y "dns" -T fields -e dns.qry.name
+
+# Data might be in subdomains
+# flag-data.evil.com → "flag-data" is the exfiltrated data
+```
+
+### Step 3: Extract Files
+```bash
+# Use NetworkMiner or binwalk
+binwalk -e traffic.pcap
+```
+
+### Step 4: Analyze ICMP
+```bash
+# ICMP can carry data in payload
+tshark -r traffic.pcap -Y "icmp" -T fields -e data
+```
+
+### Step 5: Reconstruct Streams
+```bash
+# Follow TCP streams in Wireshark
+# Or use tshark
+tshark -r traffic.pcap -z follow,tcp,raw,0
+```
+
+## Solution Script
 ```python
 from scapy.all import *
-import base64
 
-# Create HTTP-like traffic with flag
-flag = "flag{network_traffic_reveals_secrets}"
-encoded_flag = base64.b64encode(flag.encode()).decode()
+packets = rdpcap('traffic.pcap')
 
-# Build packets
-packets = []
-# ... (build HTTP request/response packets with flag embedded)
-
-wrpcap('network_traffic.pcap', packets)
+for pkt in packets:
+    if pkt.haslayer(DNS):
+        # Extract DNS queries
+        query = pkt[DNSQR].qname.decode()
+        print(f"DNS: {query}")
+    
+    if pkt.haslayer(ICMP):
+        # Extract ICMP payload
+        if pkt[ICMP].type == 8:  # Echo request
+            data = pkt[ICMP].load
+            print(f"ICMP: {data}")
 ```
 
-### Method 3: Manual Creation
-1. Open Wireshark
-2. Start capture
-3. Generate traffic (HTTP requests, DNS queries, etc.)
-4. Embed flag in one of the HTTP requests
-5. Save as pcap
-
-## Flag
-flag{network_traffic_reveals_secrets}
-
-## Solution
-1. Open pcap in Wireshark
-2. Filter by HTTP: `http`
-3. Look for suspicious requests
-4. Find the flag in HTTP parameters or response body
-
-Or use tshark:
-```bash
-tshark -r network_traffic.pcap -Y "http" -T fields -e http.request.uri
-```
+## Hints
+1. DNS queries often hide data in subdomain names
+2. ICMP echo requests can carry arbitrary data
+3. Look for unusual ports or protocols
+4. File transfers often start with magic bytes (MZ, PK, etc.)
+5. The key.pem decrypts the TLS traffic - use it in Wireshark

@@ -1,46 +1,93 @@
-# Challenge 19: Strings++
+# Challenge 19: Anti-RE (Upgraded from Strings++)
 # Category: Reverse
-# Points: 400
-# Difficulty: Medium
+# Points: 450
+# Difficulty: MEDIUM-HARD
 
 ## Description
-I found this binary, but `strings` command doesn't show anything useful. Can you reverse engineer it and find the hidden flag?
+This binary uses advanced obfuscation techniques to hide the flag. Simple `strings` won't work. Can you reverse engineer it?
 
-[Provide challenge.bin]
+**File:** `anti_re_binary`
 
-## How to Create the Challenge
+## Obfuscation Techniques
+
+### 1. Control Flow Flattening
+- Normal if/else converted to switch-case with state variable
+- Makes static analysis very difficult
+
+### 2. Opaque Predicates
+- Conditions that always evaluate to same value
+- But looks complex to analyzer
+
+### 3. String Encryption
+- All strings encrypted with XOR
+- Decrypted at runtime
+
+### 4. Junk Code Insertion
+- Dead code that never executes
+- Confuses disassemblers
+
+### 5. Anti-Debug Checks
+- Detects debuggers and profilers
+
+## Files
+- `anti_re_binary` - Obfuscated binary
+- `generate.py` - Creates the challenge (for creators)
+
+## Tools Needed
+- Ghidra - https://ghidra-sre.org/
+- IDA Pro - https://hex-rays.com/ida-pro/
+- Binary Ninja - https://binary.ninja/
+- x64dbg - https://x64dbg.com/
+- Python for scripting
+
+## Solution Approaches
+
+### Approach 1: Dynamic Analysis
 ```bash
-python3 generate.py
+# Run with strace to see syscalls
+strace ./anti_re_binary
+
+# Run with ltrace to see library calls
+ltrace ./anti_re_binary
+
+# Debug with GDB
+gdb ./anti_re_binary
 ```
 
-## Flag
-flag{strings_command_wont_find_this}
-
-## Solution
-The flag is XOR'd with key 0x42 and obfuscated in the binary.
-
-### Method 1: Manual Analysis
-1. Open in a hex editor or Ghidra
-2. Look for patterns after the code section
-3. Extract the obfuscated bytes
-4. XOR with 0x42 to decrypt
-
-### Method 2: Python Script
+### Approach 2: Patch Anti-Debug
 ```python
-with open('challenge.bin', 'rb') as f:
+# Find and NOP out anti-debug checks
+# Look for: ptrace, IsDebuggerPresent, timing checks
+```
+
+### Approach 3: Extract Encrypted Strings
+```python
+# Find encrypted string table
+# XOR decrypt with known key
+```
+
+### Approach 4: Symbolic Execution
+```python
+# Use angr or Manticore
+import angr
+
+p = angr.Project('./anti_re_binary')
+# Find path to success
+```
+
+## Solution Script
+```python
+# Extract XOR encrypted strings
+with open('anti_re_binary', 'rb') as f:
     data = f.read()
 
-key = 0x42
-flag_bytes = bytearray()
-
-for i in range(0, len(data), 11):
-    if i + 11 <= len(data):
-        chunk = data[i:i+11]
-        if len(chunk) >= 10:
-            flag_chunk = chunk[3:7]
-            flag_bytes.extend(flag_chunk)
-
-flag_bytes = flag_bytes.rstrip(b'\x00')
-decrypted = bytes([b ^ key for b in flag_bytes])
-print(decrypted.decode())
+# Find pattern: encrypted string followed by key
+# XOR decrypt each string
 ```
+
+## Hints
+1. Control flow flattening uses a state variable to track execution
+2. Anti-debug can be bypassed by patching
+3. Encrypted strings are usually in a specific section (.rdata or .data)
+4. Use Ghidra's decompiler to see pseudo-code
+5. Symbolic execution (angr) can solve these automatically

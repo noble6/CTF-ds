@@ -1,51 +1,84 @@
-# Challenge 11: Stego 101
+# Challenge 11: Stego Master (Upgraded from Stego 101)
 # Category: Forensics
-# Points: 300
-# Difficulty: Medium
+# Points: 350
+# Difficulty: MEDIUM-HARD
 
 ## Description
-There's something hidden in this image. Can you extract the secret?
+There are MULTIPLE secrets hidden in this image. The attacker used layered steganography to hide their tracks. Can you find ALL the hidden data?
 
-[Provide stego_image.png - use steghide or LSB to embed flag]
+**File:** `stego_master.png`
 
-## How to Create the Challenge Image
+## Layers of Hidden Data
+
+The image contains multiple hidden messages using different techniques:
+
+### Layer 1: LSB (Least Significant Bit)
+- Standard LSB steganography
+- Extract using `stegsolve` or custom Python script
+
+### Layer 2: Metadata (EXIF)
+- Hidden data in EXIF fields
+- Use `exiftool` to extract
+
+### Layer 3: File Carving
+- Another file embedded at the end of the image
+- Use `binwalk` to extract
+
+### Layer 4: Password Protected
+- Some data is encrypted
+- Password hint is in the metadata
+
+## How to Create
 ```bash
-# Using steghide (install: apt install steghide)
-echo "flag{steganography_hides_in_pixels}" > secret.txt
-steghide embed -cf cover_image.png -ef secret.txt -p "password123"
+# 1. Create base image
+python3 generate.py
+
+# 2. Embed data using steghide
+steghide embed -cf cover.png -ef secret.txt -p "password123"
+
+# 3. Add EXIF data
+exiftool -Comment="Password hint: college_year" stego_master.png
 ```
 
-Or use Python with PIL:
+## Tools Needed
+- `stegsolve` - Visual steganography analysis
+- `steghide` - Extract embedded data
+- `exiftool` - Read metadata
+- `binwalk` - File carving
+- `strings` - Extract text
+- Python with PIL - LSB extraction
+
+## Solution Approach
+
+### Step 1: Check Metadata
+```bash
+exiftool stego_master.png
+strings stego_master.png | grep -i flag
+```
+
+### Step 2: Visual Analysis
+```bash
+stegsolve stego_master.png
+# Check different bit planes
+```
+
+### Step 3: LSB Extraction
 ```python
 from PIL import Image
-import numpy as np
+img = Image.open('stego_master.png')
+pixels = img.load()
+# Extract LSB from each channel
+```
 
-img = Image.open('cover_image.png')
-pixels = np.array(img)
+### Step 4: File Carving
+```bash
+binwalk -e stego_master.png
+```
 
-# Hide flag in LSB of red channel
-flag = "flag{steganography_hides_in_pixels}"
-binary_flag = ''.join(format(ord(c), '08b') for c in flag)
-
-idx = 0
-for i in range(len(binary_flag)):
-    row = i // (img.width * 3)
-    col = (i % (img.width * 3)) // 3
-    channel = i % 3
-    pixels[row][col][channel] = (pixels[row][col][channel] & 0xFE) | int(binary_flag[i])
-
-stego_img = Image.fromarray(pixels)
-stego_img.save('stego_image.png')
+### Step 5: Steghide (with password)
+```bash
+steghide extract -sf stego_master.png -p "college2026"
 ```
 
 ## Flag
-flag{steganography_hides_in_pixels}
-
-## Solution
-Use steghide to extract:
-```bash
-steghide extract -sf stego_image.png -p "password123"
-```
-Password is hinted in the challenge or use common passwords.
-
-Or use online tools like https://www.aperisolve.com/
+The flag is assembled from multiple layers. Each layer gives part of the flag.

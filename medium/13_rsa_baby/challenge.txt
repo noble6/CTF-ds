@@ -1,40 +1,79 @@
-# Challenge 13: RSA Baby
+# Challenge 13: RSA Evolution (Upgraded from RSA Baby)
 # Category: Crypto
-# Points: 350
-# Difficulty: Medium
+# Points: 400
+# Difficulty: MEDIUM-HARD
 
 ## Description
-I encrypted the flag using RSA, but I think I made a mistake. Can you decrypt it?
+I encrypted the flag using RSA, but I made some... unconventional choices. Can you break it?
 
+## Challenge Variants (Choose One)
+
+### Variant A: Wiener's Attack (Small Private Exponent)
 ```
-n = 1000000016000000063
+N = large_number
+e = very_large_number  # This is suspicious!
+c = ciphertext
+```
+The private exponent `d` is very small, making it vulnerable to Wiener's continued fractions attack.
+
+### Variant B: Multi-Prime RSA
+```
+N = p * q * r  # Three primes instead of two!
 e = 65537
-ciphertext = 32733159860069353218860496061234567890
+c = ciphertext
+```
+Using three smaller primes makes N easier to factor.
+
+### Variant C: Common Modulus Attack
+```
+N = same for both
+e1 = 3
+e2 = 65537
+c1 = pow(m, e1, N)
+c2 = pow(m, e2, N)
+```
+Same message encrypted with different exponents, same modulus.
+
+## Solution Approaches
+
+### Wiener's Attack
+```python
+from sympy import continued_fraction_periodic
+
+def wiener_attack(e, n):
+    # Continued fraction expansion of e/n
+    cf = continued_fraction_periodic(0, 1, e/n)
+    # ... convergents to find d
 ```
 
-## Flag
-flag{rsa_with_small_primes_is_weak}
-
-## Solution
-The modulus n is the product of two small primes:
-- p = 1000000007
-- q = 1000000009
-
-These are well-known primes! Factor n or just recognize them.
-
+### Multi-Prime RSA
 ```python
+# Factor N (smaller primes = easier)
 from sympy import factorint
 
-n = 1000000016000000063
-factors = factorint(n)
-p, q = list(factors.keys())
+factors = factorint(N)
+p, q, r = factors.keys()
 
-phi = (p-1) * (q-1)
-e = 65537
+phi = (p-1) * (q-1) * (r-1)
 d = pow(e, -1, phi)
-
-c = 32733159860069353218860496061234567890
-plaintext = pow(c, d, n)
-flag = plaintext.to_bytes((plaintext.bit_length() + 7) // 8, 'big').decode()
-print(flag)
+plaintext = pow(c, d, N)
 ```
+
+### Common Modulus
+```python
+# Extended Euclidean Algorithm
+def extended_gcd(a, b):
+    if a == 0:
+        return b, 0, 1
+    gcd, x1, y1 = extended_gcd(b % a, a)
+    return gcd, y1 - (b // a) * x1, x1
+
+# Find m from c1, c2, e1, e2, N
+_, a, b = extended_gcd(e1, e2)
+m = (pow(c1, a, N) * pow(c2, b, N)) % N
+```
+
+## Tools Needed
+- Python with `sympy` and `pycryptodome`
+- `RsaCtfTool` - https://github.com/Ganapati/RsaCtfTool
+- Online RSA attacks: https://www.dcode.fr/rsa-cipher

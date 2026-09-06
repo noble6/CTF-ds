@@ -1,0 +1,73 @@
+# Challenge 21: ROP Chain Master
+# Category: Pwn
+# Points: 1000
+# Difficulty: HARD
+
+## Description
+I compiled this binary with security features, but I think there's still a way in. Can you exploit it and get a shell?
+
+**Binary:** `rop_master` (ELF 64-bit, x86-64)
+
+## Binary Properties
+- ✅ NX enabled (No-Execute) - can't run shellcode on stack
+- ✅ ASLR enabled - libc addresses randomized
+- ❌ No stack canary - buffer overflow possible
+- ❌ No PIE - binary addresses are fixed
+- ❌ Partial RELRO - GOT is writable
+
+## Files
+- `rop_master.c` - Source code
+- `rop_master` - Compiled binary (compile yourself for authenticity)
+
+## How to Compile
+```bash
+gcc -o rop_master rop_master.c -fno-stack-protector -no-pie -z norelro
+strip rop_master
+```
+
+## Hints
+1. First, find the buffer overflow vulnerability
+2. You need to leak a libc address to bypass ASLR
+3. Use ROP gadgets from the binary to call puts(puts@GOT)
+4. Calculate libc base from the leak
+5. Build final ROP chain to call system("/bin/sh")
+
+## Tools Needed
+- `pwntools` - Python exploitation framework
+- `ROPgadget` or `ropper` - Find ROP gadgets
+- `gdb` with GEF/PEDA - Debug and analyze
+- `objdump` - Disassemble binary
+
+## Solution Approach
+
+### Stage 1: Leak libc
+```
+Overflow buffer (64 bytes) + saved RBP (8 bytes)
+→ pop rdi; ret
+→ puts@GOT (leaks actual puts address)
+→ puts@PLT (print it)
+→ main (loop back for stage 2)
+```
+
+### Stage 2: Get shell
+```
+Overflow buffer again
+→ pop rdi; ret
+→ "/bin/sh" (from libc)
+→ system() (from libc)
+```
+
+## Solution Script
+```python
+python3 solve.py
+```
+
+## Difficulty Notes
+This challenge requires understanding of:
+- x86-64 calling convention
+- GOT/PLT mechanism
+- ASLR bypass via info leak
+- ROP chain construction
+- Stack alignment issues (movaps)
+
+Good luck! 💀

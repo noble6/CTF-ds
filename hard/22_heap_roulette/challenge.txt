@@ -1,0 +1,91 @@
+# Challenge 22: Heap Roulette
+# Category: Pwn
+# Points: 1000
+# Difficulty: HARD
+
+## Description
+I built this heap manager with note-taking functionality. Can you exploit it to get a shell?
+
+**Service:** `nc HOST PORT` (or run locally with socat)
+
+## Vulnerabilities
+This program has multiple heap vulnerabilities:
+
+1. **Use-After-Free**: `delete_note()` frees memory but doesn't zero the pointer
+2. **Off-by-One Overflow**: `edit_note()` can write 1 byte past allocated size
+3. **Information Leak**: `view_note()` can read freed chunk contents (tcache fd pointers)
+
+## Files
+- `heap_roulette.c` - Source code
+- `heap_roulette` - Compiled binary
+
+## How to Compile
+```bash
+gcc -o heap_roulette heap_roulette.c
+strip heap_roulette
+```
+
+## How to Run
+```bash
+# Local
+./heap_roulette
+
+# Remote (using socat)
+socat TCP-LISTEN:1337,reuseaddr,fork EXEC:./heap_roulette
+```
+
+## Goal
+Overwrite `__free_hook` (or `__malloc_hook`) with `system()`, then free a chunk containing "/bin/sh" to get a shell.
+
+## Attack Path: Tcache Poisoning
+
+### Step 1: Information Leak
+```
+Allocate chunks → Free them → View freed chunks
+- Heap leak: Read tcache fd pointer
+- Libc leak: Get chunk into unsorted bin, read main_arena pointer
+```
+
+### Step 2: Tcache Poisoning
+```
+Free chunk A → Free chunk B (now B→A in tcache)
+Use UAF to overwrite B's fd to __free_hook
+Allocate (gets B) → Allocate (gets __free_hook!)
+Write system() to __free_hook
+```
+
+### Step 3: Trigger Shell
+```
+Create chunk with "/bin/sh" → Delete it
+free("/bin/sh") → system("/bin/sh") → SHELL!
+```
+
+## Tools Needed
+- `pwntools` - Python exploitation framework
+- `gdb` with GEF/PEDA/pwndbg - Heap debugging
+- `pwndbg` - Excellent heap visualization
+- Knowledge of tcache internals
+
+## Solution Script
+```bash
+# Local
+python3 solve.py
+
+# Remote
+python3 solve.py REMOTE HOST=ctf.example.com PORT=1337
+```
+
+## Difficulty Notes
+This requires understanding of:
+- glibc malloc internals (tcache, fastbin, unsorted bin)
+- Use-After-Free exploitation
+- Tcache poisoning technique
+- Hook function overwriting (__free_hook)
+- Heap grooming and layout control
+
+## Learning Resources
+- https://sourceware.org/glibc/wiki/MallocInternals
+- https://github.com/shellphish/how2heap
+- https://ctf-wiki.org/pwn/linux/user-mode/heap/ptmalloc2/
+
+Good luck corrupting the heap! 💀

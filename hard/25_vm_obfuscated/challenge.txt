@@ -1,0 +1,138 @@
+# Challenge 25: VM-Obfuscated RE
+# Category: Reverse
+# Points: 1000
+# Difficulty: HARD
+
+## Description
+I created a custom virtual machine to protect my flag. The bytecode is encrypted and the VM has anti-debug features. Can you reverse engineer it and extract the flag?
+
+**Files:**
+- `vm_challenge.py` - The challenge binary (run this to check your flag)
+- `bytecode.bin` - Encrypted VM bytecode (analyze this!)
+
+## Challenge Architecture
+
+```
+┌─────────────────────────────────────────┐
+│           Challenge Binary              │
+├─────────────────────────────────────────┤
+│  Anti-Debug Checks                      │
+│  ├── Timing validation                  │
+│  └── Debugger detection                 │
+├─────────────────────────────────────────┤
+│  Bytecode Loader                        │
+│  ├── XOR decryption (key: 0xDEADBEEF)  │
+│  └── Memory initialization              │
+├─────────────────────────────────────────┤
+│  VM Interpreter                          │
+│  ├── 16 custom opcodes                  │
+│  ├── Stack-based execution              │
+│  ├── 1KB memory space                   │
+│  └── I/O operations                     │
+├─────────────────────────────────────────┤
+│  Encrypted Bytecode                     │
+│  └── Flag verification logic            │
+└─────────────────────────────────────────┘
+```
+
+## VM Instruction Set (Opcodes)
+
+| Opcode | Name | Description |
+|--------|------|-------------|
+| 0x01 | PUSH | Push immediate value |
+| 0x02 | POP | Remove top of stack |
+| 0x03 | ADD | Add top two values |
+| 0x04 | SUB | Subtract |
+| 0x05 | MUL | Multiply |
+| 0x06 | DIV | Divide |
+| 0x07 | XOR | Bitwise XOR |
+| 0x08 | AND | Bitwise AND |
+| 0x09 | OR | Bitwise OR |
+| 0x0A | NOT | Bitwise NOT |
+| 0x0B | SHL | Shift left |
+| 0x0C | SHR | Shift right |
+| 0x0D | CMP | Compare values |
+| 0x0E | JMP | Unconditional jump |
+| 0x0F | JZ | Jump if zero |
+| 0x10 | JNZ | Jump if not zero |
+| 0x11 | LOAD | Load from memory |
+| 0x12 | STORE | Store to memory |
+| 0x13 | CALL | Call subroutine |
+| 0x14 | RET | Return |
+| 0x15 | SYSCALL | System call |
+| 0x16 | HALT | Stop execution |
+| 0x17 | NOP | No operation |
+| 0x18 | DUP | Duplicate top |
+| 0x19 | SWAP | Swap top two |
+| 0x1A | INPUT | Read input |
+| 0x1B | OUTPUT | Write output |
+| 0x1C | ENCRYPT | Encrypt value |
+| 0x1D | DECRYPT | Decrypt value |
+
+## Anti-Debug Features
+
+1. **Timing Checks**: Detects if execution is slowed (debugging)
+2. **Debugger Detection**: Checks for attached debuggers
+3. **Stack Corruption**: Corrupts stack if debugger detected
+4. **NOP Sleds**: Inserts NOPs to confuse disassemblers
+
+## Encryption Layers
+
+1. **Bytecode Encryption**: XOR with key `0xDEADBEEF`
+2. **Flag Storage**: XOR with key `0x42`
+3. **Position-dependent**: Some operations depend on execution order
+
+## Solution Approach
+
+### Step 1: Decrypt Bytecode
+```python
+key = 0xDEADBEEF
+decrypted = bytes([b ^ ((key >> (i % 4 * 8)) & 0xFF) 
+                   for i, b in enumerate(encrypted)])
+```
+
+### Step 2: Disassemble VM Opcodes
+Write a disassembler for the custom instruction set.
+
+### Step 3: Understand Verification Logic
+The bytecode:
+1. Stores encrypted flag characters in memory
+2. Reads user input
+3. XORs input with 0x42
+4. Compares with stored values
+
+### Step 4: Extract Flag
+The flag is stored as XOR'd characters. Extract and decrypt.
+
+## Tools Needed
+- Python (for scripting)
+- Hex editor (for bytecode analysis)
+- Custom disassembler (write your own!)
+- Patience (VM RE is time-consuming)
+
+## Solution Script
+```bash
+python3 solve.py
+```
+
+## Hints
+1. The bytecode is XOR encrypted with a 4-byte key
+2. The flag is stored character by character, XOR'd with 0x42
+3. Look for patterns: PUSH, PUSH, STORE (repeated for each char)
+4. Anti-debug can be bypassed by patching timing checks
+5. Write a disassembler - it will make the challenge much easier
+
+## Difficulty Notes
+This challenge requires:
+- Custom VM reverse engineering
+- Understanding of stack-based architectures
+- Ability to write analysis tools
+- XOR encryption knowledge
+- Anti-debug bypass techniques
+
+## Learning Resources
+- [VM Reverse Engineering](https://www.synacktiv.com/posts/reverse/vm-based-obfuscation)
+- [Custom VM Analysis](https://shellphish.github.io/how2heap/)
+- [XOR Encryption](https://en.wikipedia.org/wiki/XOR_cipher)
+
+Good luck reversing the VM! 🤖
