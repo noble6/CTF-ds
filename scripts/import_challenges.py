@@ -17,7 +17,7 @@ CHALLENGES = {
             "category": "Misc",
             "description": "Welcome to the College CTF! This is your first challenge.\nSometimes the flag is right in front of you...\n\nHint: Read the description carefully.",
             "value": 100,
-            "flag": "flag{welcome_to_college_ctf_2026}",
+            "flag": "flag{xaji0y6dpbhsahxthv3a3zmf}",
             "type": "static"
         },
         {
@@ -25,7 +25,7 @@ CHALLENGES = {
             "category": "Crypto",
             "description": "I found this encoded message, but I can't read it. Can you decode it?\n\nZmxhZ3tiYXNlNjRfaXNfdGhlX2ZpcnN0X3RoaW5nX3lvdV9sZWFybn0=",
             "value": 100,
-            "flag": "flag{base64_is_the_first_thing_you_learn}",
+            "flag": "flag{8mdd4v30t9nt3w5uzbikcidk}",
             "type": "static"
         },
         {
@@ -33,7 +33,7 @@ CHALLENGES = {
             "category": "Web",
             "description": "There's something hidden on this webpage. Can you find it?\n\nhttp://192.168.31.217:5001",
             "value": 100,
-            "flag": "flag{inspect_element_is_your_friend}",
+            "flag": "flag{wnnhj7xvg0fn9xuy41ibljh7}",
             "type": "static"
         },
         {
@@ -41,7 +41,7 @@ CHALLENGES = {
             "category": "Crypto",
             "description": "I intercepted this message, but it looks like gibberish. What format is this?\n\n66 6c 61 67 7b 68 65 78 5f 69 73 5f 63 6f 6f 6c 5f 72 69 67 68 74 7d",
             "value": 150,
-            "flag": "flag{hex_is_cool_right}",
+            "flag": "flag{5lxo6qjiujv6oh9sdbdw2pcn}",
             "type": "static"
         },
         {
@@ -49,7 +49,7 @@ CHALLENGES = {
             "category": "Web",
             "description": "I made a login system, but only admins can see the flag. Can you become an admin?\n\nhttp://192.168.31.217:5002",
             "value": 150,
-            "flag": "flag{cookies_can_be_modified_by_users}",
+            "flag": "flag{9t84azytjxepq85jsg65kxvf}",
             "type": "static"
         },
         {
@@ -57,7 +57,7 @@ CHALLENGES = {
             "category": "Crypto",
             "description": "Julius Caesar used to encrypt his messages this way. Can you decrypt it?\n\nsynt{pnpghzr_frpnyr_gjb_gjb_a}",
             "value": 150,
-            "flag": "flag{caesar_secret_scale_two_two_n}",
+            "flag": "flag{1t2tala753lc58drc11ertj5}",
             "type": "static"
         },
         {
@@ -65,7 +65,7 @@ CHALLENGES = {
             "category": "Forensics",
             "description": "I have a file, but my computer says it's corrupted. Can you figure out what's wrong?\n\n[Download mystery_file.bin]",
             "value": 150,
-            "flag": "flag{file_extensions_are_just_labels}",
+            "flag": "flag{pht0hl9xpseimvihcwi64ciy}",
             "type": "static"
         },
         {
@@ -73,7 +73,7 @@ CHALLENGES = {
             "category": "Forensics",
             "description": "There's a secret message hidden in this file. Can you find it?\n\n[Download hidden_message.txt]",
             "value": 200,
-            "flag": "flag{hidden_in_plain_text}",
+            "flag": "flag{he7ur23gdppq0y9dom5igqpk}",
             "type": "static"
         },
         {
@@ -81,7 +81,7 @@ CHALLENGES = {
             "category": "Crypto",
             "description": "Can you decode this message?\n\nsynt{ebg13_vf_n_puvyqref_pvcure}",
             "value": 100,
-            "flag": "flag{rot13_is_a_childrens_cipher}",
+            "flag": "flag{i7p5tb94874frhocn9j2qp89}",
             "type": "static"
         },
         {
@@ -89,7 +89,7 @@ CHALLENGES = {
             "category": "Web",
             "description": "I made a login page. Can you bypass it and get the flag?\n\nhttp://192.168.31.217:5003",
             "value": 200,
-            "flag": "flag{sql_injection_is_easy_admin}",
+            "flag": "flag{uzfk8ut0cvs4f8cgvyie6ivw}",
             "type": "static"
         }
     ],
@@ -99,7 +99,7 @@ CHALLENGES = {
             "category": "Forensics",
             "description": "There are MULTIPLE secrets hidden in this image using different techniques. Can you find ALL of them?\n\n[Download stego_master.png]\n\nHint: LSB, EXIF metadata, file carving, and password-protected layers!",
             "value": 350,
-            "flag": "flag{multi_layer_steganography_master}",
+            "flag": "flag{pvs7hzioykl1cq99chj755nf4zw9xa3k}",
             "type": "static"
         },
         {
@@ -107,7 +107,7 @@ CHALLENGES = {
             "category": "Web",
             "description": "I implemented JWT with RS256 algorithm. But I heard algorithm confusion attacks can bypass this...\n\nhttp://192.168.31.217:5004\n\nHint: Change RS256 to HS256 and use the public key as HMAC secret!",
             "value": 400,
-            "flag": "flag{jwt_algorithm_confusion_attack}",
+            "flag": "flag{x7eedtjvzhwjr64dpja1wj0tpac56t4u}",
             "type": "static"
         },
         {
@@ -115,7 +115,7 @@ CHALLENGES = {
             "category": "Crypto",
             "description": "I encrypted the flag using RSA with unconventional parameters. Can you break it?\n\nVariant A: Wiener's attack (small d)\nVariant B: Multi-prime RSA (N = p*q*r)\nVariant C: Common modulus attack\n\n[Download challenge files]",
             "value": 400,
-            "flag": "flag{rsa_unconventional_attacks}",
+            "flag": "flag{fel6246hid25owf75935a0l7253j2d54}",
             "type": "static"
         },
         {
@@ -123,7 +123,7 @@ CHALLENGES = {
             "category": "Web",
             "description": "I added MULTIPLE filters to prevent path traversal. But can you bypass ALL of them?\n\nhttp://192.168.31.217:5005\n\nFilters: ../ blocked, URL encoding blocked, null bytes blocked, normalization applied.\n\nHint: Double encoding, UTF-8 overlong, path truncation!",
             "value": 400,
-            "flag": "flag{filter_bypass_all_layers}",
+            "flag": "flag{i3qk2iagl58kxo9t7e8g8jdp0lvsnujz}",
             "type": "static"
         },
         {
@@ -131,7 +131,7 @@ CHALLENGES = {
             "category": "Web",
             "description": "This website has Content Security Policy (CSP) protection. But can you still execute DOM-based XSS?\n\nhttp://192.168.31.217:5006\n\nHint: Look for DOM sinks (innerHTML, eval). CSP allows 'unsafe-inline'!",
             "value": 400,
-            "flag": "flag{dom_xss_csp_bypass}",
+            "flag": "flag{a7tz0yncxll4zklookep7y6wktakpuxq}",
             "type": "static"
         },
         {
@@ -139,7 +139,7 @@ CHALLENGES = {
             "category": "Forensics",
             "description": "I captured encrypted network traffic. I also have the TLS key from memory. Can you decrypt and analyze?\n\n[Download traffic.pcap and key.pem]\n\nHint: Use Wireshark TLS decryption, check DNS queries, look for exfiltrated data!",
             "value": 450,
-            "flag": "flag{network_forensics_encrypted_traffic}",
+            "flag": "flag{phr62gdswm31yihair4cowgzrixa11dp}",
             "type": "static"
         },
         {
@@ -147,7 +147,7 @@ CHALLENGES = {
             "category": "Crypto",
             "description": "I encrypted the flag using MULTIPLE cipher layers: Vigenere → ROT13 → Reverse → Atbash. Can you peel back all the layers?\n\nCiphertext: Jx#5k9@p2m!Qw8^z\n\nHint: Decrypt in REVERSE order. Key for Vigenere: 'college'",
             "value": 350,
-            "flag": "flag{cipher_chain_multiple_layers}",
+            "flag": "flag{g8sbi4q2y9v86wzs3t60rjiw1swjckjl}",
             "type": "static"
         },
         {
@@ -155,7 +155,7 @@ CHALLENGES = {
             "category": "Web",
             "description": "This API has IDOR AND race condition vulnerabilities. Can you exploit both?\n\nhttp://192.168.31.217:5007\n\nHint: Access admin profile via IDOR, exploit race condition for balance manipulation!",
             "value": 400,
-            "flag": "flag{race_condition_idor_chain}",
+            "flag": "flag{teiyzcotohp6vz41nam148p0tvhhpbmy}",
             "type": "static"
         },
         {
@@ -163,7 +163,7 @@ CHALLENGES = {
             "category": "Reverse",
             "description": "This binary uses advanced obfuscation: control flow flattening, opaque predicates, string encryption, and anti-debug. Can you reverse it?\n\n[Download anti_re_binary]\n\nHint: Use Ghidra/IDA for static analysis, or dynamic analysis with GDB. Consider angr for symbolic execution!",
             "value": 450,
-            "flag": "flag{anti_re_obfuscation_bypass}",
+            "flag": "flag{ofqewaouaxeqbnhl1n13jcat9mx2x18h}",
             "type": "static"
         },
         {
@@ -171,7 +171,7 @@ CHALLENGES = {
             "category": "Crypto",
             "description": "I stored passwords using SHA-256 with a salt. But my implementation might be flawed...\n\nadmin:5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8\nuser1:a3f8b2e5c1d7a9f4e6b0c2d8a1f3e5b7c9d2a4f6e8b0c1d3a5f7e9b1c3d5a7\n\nHint: Try CrackStation, hashcat, or John the Ripper!",
             "value": 400,
-            "flag": "flag{sha256_weak_implementation}",
+            "flag": "flag{afeyuhz1gv0e38daly8ozcywd14ve92m}",
             "type": "static"
         }
     ],
@@ -181,7 +181,7 @@ CHALLENGES = {
             "category": "Pwn",
             "description": "I compiled this binary with security features (NX, ASLR), but no stack canary. Can you build a ROP chain to get a shell?\n\n[Download rop_master binary]\n\nHint: First leak a libc address, then call system('/bin/sh')",
             "value": 1000,
-            "flag": "flag{rop_chain_aslr_bypass_master}",
+            "flag": "secret{pnsm43d8w3zp08j3trp0j43d5iqvnb4gh2m5zja8}",
             "type": "static"
         },
         {
@@ -189,7 +189,7 @@ CHALLENGES = {
             "category": "Pwn",
             "description": "This heap manager has multiple vulnerabilities. Can you exploit Use-After-Free and tcache poisoning to overwrite __free_hook?\n\nnc HOST PORT\n\nHint: View freed chunks to leak addresses, then poison tcache.",
             "value": 1000,
-            "flag": "flag{tcache_poisoning_free_hook}",
+            "flag": "secret{dzr1yxr2dhylurtp0lzjjeget1ghr09skdgigatj}",
             "type": "static"
         },
         {
@@ -197,7 +197,7 @@ CHALLENGES = {
             "category": "Crypto",
             "description": "I encrypted the flag using RSA PKCS#1 v1.5. The decryption oracle returns detailed error messages. Can you implement Bleichenbacher's attack?\n\nhttp://HOST:5010\n\nHint: ~1 million queries needed. The oracle distinguishes padding errors.",
             "value": 1000,
-            "flag": "flag{bleichenbacher_padding_oracle_rsa}",
+            "flag": "secret{9tze5r5uqpgb7r3ocwbfuk9e1v2isqp49kwv08hh}",
             "type": "static"
         },
         {
@@ -205,7 +205,7 @@ CHALLENGES = {
             "category": "Forensics",
             "description": "I captured a memory dump with advanced anti-forensics: process hollowing, XOR encryption, DNS tunneling, and more. Find ALL hidden flags!\n\n[Download memory_dump.raw (50MB)]\n\nHint: Try multiple decoding techniques - plaintext, XOR, Base64, UTF-16.",
             "value": 900,
-            "flag": "flag{v0l4t1l1ty_m4st3r_4dv4nc3d_f0r3ns1cs}",
+            "flag": "hidden{xfgcaqvkizzqy72wx7ptx63cfl0ukeyz7srcbplj}",
             "type": "static"
         },
         {
@@ -213,7 +213,7 @@ CHALLENGES = {
             "category": "Reverse",
             "description": "The flag is protected by a custom virtual machine with encrypted bytecode and anti-debug features. Reverse engineer the VM to extract the flag.\n\n[Download vm_challenge.py and bytecode.bin]\n\nHint: The bytecode is XOR encrypted with 0xDEADBEEF. Flag chars stored with XOR 0x42.",
             "value": 1000,
-            "flag": "flag{vm_0bfu5c4t10n_r3v3r51ng}",
+            "flag": "hidden{d84u89yjb1qx6gvwrdmly4lyk83tqll8os9xtogn}",
             "type": "static"
         }
     ]
