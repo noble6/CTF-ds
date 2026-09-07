@@ -21,8 +21,7 @@ CHALLENGES=(
     "Path Traversal|5005|medium/14_path_traversal"
     "XSS Reflected|5006|medium/15_xss_reflected"
     "IDOR|5007|medium/18_idor"
-    "SSRF Master|5008|hard/21_ssrf_master"
-    "Padding Oracle|5009|hard/22_padding_oracle"
+    "Bleichenbacher|5010|hard/23_bleichenbacher"
 )
 
 mkdir -p "$PID_DIR" "$LOG_DIR"

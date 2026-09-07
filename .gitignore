@@ -30,16 +30,16 @@ logs/
 .DS_Store
 Thumbs.db
 
-# Challenge files (generated)
-*.bin
+# Challenge files (generated - but keep challenge_files/)
 *.raw
 *.pcap
-*.png
-*.jpg
 files/
 obfuscated_challenge
 challenge
 challenge.o
+
+# Allow challenge_files directory
+!challenge_files/
 
 # PIDs
 .pids/

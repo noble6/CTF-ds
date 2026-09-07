@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string, escape
+from flask import Flask, request, render_template_string
 
 app = Flask(__name__)
 
@@ -37,4 +37,4 @@ def flag():
     return "flag{xss_can_execute_arbitrary_javascript}"
 
 if __name__ == '__main__':
-    app.run(port=5005)
+    app.run(host='0.0.0.0', port=5006)

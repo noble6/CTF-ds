@@ -31,7 +31,7 @@ CHALLENGES = {
         {
             "name": "Inspect Me",
             "category": "Web",
-            "description": "There's something hidden on this webpage. Can you find it?\n\nhttp://YOUR_SERVER:5001",
+            "description": "There's something hidden on this webpage. Can you find it?\n\nhttp://192.168.31.217:5001",
             "value": 100,
             "flag": "flag{inspect_element_is_your_friend}",
             "type": "static"
@@ -47,7 +47,7 @@ CHALLENGES = {
         {
             "name": "Cookie Monster",
             "category": "Web",
-            "description": "I made a login system, but only admins can see the flag. Can you become an admin?\n\nhttp://YOUR_SERVER:5002",
+            "description": "I made a login system, but only admins can see the flag. Can you become an admin?\n\nhttp://192.168.31.217:5002",
             "value": 150,
             "flag": "flag{cookies_can_be_modified_by_users}",
             "type": "static"
@@ -87,7 +87,7 @@ CHALLENGES = {
         {
             "name": "SQL Rookie",
             "category": "Web",
-            "description": "I made a login page. Can you bypass it and get the flag?\n\nhttp://YOUR_SERVER:5003",
+            "description": "I made a login page. Can you bypass it and get the flag?\n\nhttp://192.168.31.217:5003",
             "value": 200,
             "flag": "flag{sql_injection_is_easy_admin}",
             "type": "static"
@@ -105,7 +105,7 @@ CHALLENGES = {
         {
             "name": "JWT Nightmare",
             "category": "Web",
-            "description": "I implemented JWT with RS256 algorithm. But I heard algorithm confusion attacks can bypass this...\n\nhttp://YOUR_SERVER:5004\n\nHint: Change RS256 to HS256 and use the public key as HMAC secret!",
+            "description": "I implemented JWT with RS256 algorithm. But I heard algorithm confusion attacks can bypass this...\n\nhttp://192.168.31.217:5004\n\nHint: Change RS256 to HS256 and use the public key as HMAC secret!",
             "value": 400,
             "flag": "flag{jwt_algorithm_confusion_attack}",
             "type": "static"
@@ -121,7 +121,7 @@ CHALLENGES = {
         {
             "name": "Filter Bypass",
             "category": "Web",
-            "description": "I added MULTIPLE filters to prevent path traversal. But can you bypass ALL of them?\n\nhttp://YOUR_SERVER:5005\n\nFilters: ../ blocked, URL encoding blocked, null bytes blocked, normalization applied.\n\nHint: Double encoding, UTF-8 overlong, path truncation!",
+            "description": "I added MULTIPLE filters to prevent path traversal. But can you bypass ALL of them?\n\nhttp://192.168.31.217:5005\n\nFilters: ../ blocked, URL encoding blocked, null bytes blocked, normalization applied.\n\nHint: Double encoding, UTF-8 overlong, path truncation!",
             "value": 400,
             "flag": "flag{filter_bypass_all_layers}",
             "type": "static"
@@ -129,7 +129,7 @@ CHALLENGES = {
         {
             "name": "DOM XSS + CSP Bypass",
             "category": "Web",
-            "description": "This website has Content Security Policy (CSP) protection. But can you still execute DOM-based XSS?\n\nhttp://YOUR_SERVER:5006\n\nHint: Look for DOM sinks (innerHTML, eval). CSP allows 'unsafe-inline'!",
+            "description": "This website has Content Security Policy (CSP) protection. But can you still execute DOM-based XSS?\n\nhttp://192.168.31.217:5006\n\nHint: Look for DOM sinks (innerHTML, eval). CSP allows 'unsafe-inline'!",
             "value": 400,
             "flag": "flag{dom_xss_csp_bypass}",
             "type": "static"
@@ -153,7 +153,7 @@ CHALLENGES = {
         {
             "name": "Race Condition + IDOR",
             "category": "Web",
-            "description": "This API has IDOR AND race condition vulnerabilities. Can you exploit both?\n\nhttp://YOUR_SERVER:5007\n\nHint: Access admin profile via IDOR, exploit race condition for balance manipulation!",
+            "description": "This API has IDOR AND race condition vulnerabilities. Can you exploit both?\n\nhttp://192.168.31.217:5007\n\nHint: Access admin profile via IDOR, exploit race condition for balance manipulation!",
             "value": 400,
             "flag": "flag{race_condition_idor_chain}",
             "type": "static"
